@@ -286,10 +286,32 @@ Interested in contributing? Please read our [CONTRIBUTING.md](CONTRIBUTING.md) f
 
 ### 📖 Internal Documentation
 
+#### 🏗️ Architecture & Decisions
 *   [Identity & Access Management](./infrastructure/docs/adr/ADR%20004:%20Identity%20and%20Access%20Management.md)
 *   [Compliance & Audit System](./infrastructure/docs/adr/ADR%20006:%20Continuous%20Security%20Audit%20and%20Monitoring.md)
 *   [Disaster Recovery Strategy](./DR_STRATEGY.md)
-*   [Infrastructure Deep Dive](./infrastructure/terraform/README.md)
+
+#### 🌍 Infrastructure & Environments
+*   [Infrastructure Overview](./infrastructure/terraform/README.md)
+*   [Global Resources](./infrastructure/terraform/global/README.md)
+*   [Local Environment](./infrastructure/terraform/environments/local/README.md)
+*   [Production Environment](./infrastructure/terraform/environments/prod/README.md)
+
+#### 📦 Terraform Modules
+*   [ACM (Certificate Manager)](./infrastructure/terraform/modules/acm/README.md)
+*   [ALB (Application Load Balancer)](./infrastructure/terraform/modules/alb/README.md)
+*   [AWS Backup](./infrastructure/terraform/modules/aws_backup/README.md)
+*   [Cognito (Identity Provider)](./infrastructure/terraform/modules/cognito/README.md)
+*   [ECR (Container Registry)](./infrastructure/terraform/modules/ecr/README.md)
+*   [EKS (Kubernetes)](./infrastructure/terraform/modules/eks/README.md)
+*   [IAM Roles for IRSA](./infrastructure/terraform/modules/iam_roles_irsa/README.md)
+*   [KMS (Encryption Keys)](./infrastructure/terraform/modules/kms/README.md)
+*   [Monitoring & Security](./infrastructure/terraform/modules/monitoring/README.md)
+*   [RDS (PostgreSQL)](./infrastructure/terraform/modules/rds/README.md)
+*   [S3 (Storage)](./infrastructure/terraform/modules/s3/README.md)
+*   [VPC (Networking)](./infrastructure/terraform/modules/vpc/README.md)
+*   [VPC Endpoints](./infrastructure/terraform/modules/vpc_endpoints/README.md)
+*   [WAF (Web Application Firewall)](./infrastructure/terraform/modules/waf/README.md)
 
 ---
 
