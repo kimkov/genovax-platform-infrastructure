@@ -32,7 +32,7 @@ resource "aws_iam_role" "github_actions" {
         }
         Condition = {
           StringLike = {
-            "token.actions.githubusercontent.com:sub": "repo:Platform/infrastructure:*"
+            "token.actions.githubusercontent.com:sub": "repo:GenovaX/infrastructure:*"
           }
         }
       }
@@ -44,8 +44,8 @@ resource "aws_iam_role" "github_actions" {
 
 # Specialized deployment policy (Principle of Least Privilege)
 resource "aws_iam_policy" "infrastructure_deployment" {
-  name = "PlatformInfrastructureDeploymentPolicy"
-  description = "Permissions for deploying core Platform infrastructure services"
+  name = "GenovaXInfrastructureDeploymentPolicy"
+  description = "Permissions for deploying core GenovaX infrastructure services"
 
   policy = jsonencode({
     Version = "2012-10-17"
@@ -56,7 +56,7 @@ resource "aws_iam_policy" "infrastructure_deployment" {
         Action = ["ec2:*", "eks:*", "rds:*", "s3:*", "kms:*", "iam:*", "route53:*", "acm:*", "wafv2:*"]
         Resource = "*"
         Condition = {
-          StringEquals = { "aws:ResourceTag/Project": "Platform" }
+          StringEquals = { "aws:ResourceTag/Project": "GenovaX" }
         }
       },
       {

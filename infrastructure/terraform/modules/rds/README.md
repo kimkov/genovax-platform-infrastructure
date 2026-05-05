@@ -1,7 +1,7 @@
 ### AWS RDS (PostgreSQL) Module
 
 This module provides a production-ready, HIPAA-compliant implementation of **Amazon RDS for PostgreSQL**. 
-It is designed to host the Platform platform's relational data with a strong focus on security, high availability, and performance.
+It is designed to host the GenovaX platform's relational data with a strong focus on security, high availability, and performance.
 
 ### Features
 

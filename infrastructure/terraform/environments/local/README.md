@@ -1,6 +1,6 @@
 # Local Environment Infrastructure
 
-This module is designed to deploy the base infrastructure for the **Platform** project in a local environment. It utilizes [LocalStack](https://localstack.cloud/) to emulate AWS services, enabling development and testing without incurring cloud costs.
+This module is designed to deploy the base infrastructure for the **GenovaX** project in a local environment. It utilizes [LocalStack](https://localstack.cloud/) to emulate AWS services, enabling development and testing without incurring cloud costs.
 
 ### Features
 - **LocalStack Integration**: All resources are provisioned in a local container (default: `http://localhost:4566`).

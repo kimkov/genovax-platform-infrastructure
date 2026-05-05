@@ -1,6 +1,6 @@
 ### AWS EKS Module
 
-This module provides a secure, production-ready implementation of **Amazon Elastic Kubernetes Service (EKS)**. It is designed to host the Platform platform's microservices with a strong focus on security, compliance, and scalability, utilizing both Managed Node Groups and Fargate for workload isolation.
+This module provides a secure, production-ready implementation of **Amazon Elastic Kubernetes Service (EKS)**. It is designed to host the GenovaX platform's microservices with a strong focus on security, compliance, and scalability, utilizing both Managed Node Groups and Fargate for workload isolation.
 
 ### Features
 
@@ -27,7 +27,7 @@ module "eks" {
   source = "../../modules/eks"
 
   env          = "prod"
-  cluster_name = "platform-main-cluster"
+  cluster_name = "genovax-main-cluster"
   vpc_id       = "vpc-0123456789abcdef0"
   subnet_ids   = ["subnet-abc12345", "subnet-def67890"]
   kms_key_arn  = "arn:aws:kms:region:000000000000:key/your-key-id"

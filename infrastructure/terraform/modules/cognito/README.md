@@ -2,7 +2,7 @@
 
 This module provides a production-ready and highly secure implementation of **AWS Cognito User Pools**, 
 featuring native integration with **Office 365 (Azure AD)** via SAML 2.0. It is designed to manage user identities, 
-authentication, and authorization for the Platform ecosystem, adhering to strict security standards.
+authentication, and authorization for the GenovaX ecosystem, adhering to strict security standards.
 
 ### Features
 
@@ -44,7 +44,7 @@ module "cognito" {
   logout_urls   = ["https://app.example.com/logout"]
 
   common_tags = {
-    Project     = "Platform"
+    Project     = "GenovaX"
     Environment = "Production"
     ManagedBy   = "Terraform"
   }

@@ -28,8 +28,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     curl \
     && rm -rf /var/lib/apt/lists/*
 
-# Creating the user platform
-RUN groupadd -r platform && useradd -r -g platform platform
+# Creating the user genovax
+RUN groupadd -r genovax && useradd -r -g genovax genovax
 
 WORKDIR /app
 
@@ -39,16 +39,16 @@ COPY modules/ml-engine/src modules/ml-engine/src
 COPY modules/ml-shared-lib/src modules/ml-shared-lib/src
 
 # Preparing the log directory
-RUN mkdir -p /var/log/platform && \
-    chown -R platform:platform /var/log/platform && \
-    chmod 755 /var/log/platform
+RUN mkdir -p /var/log/genovax && \
+    chown -R genovax:genovax /var/log/genovax && \
+    chmod 755 /var/log/genovax
 
 ENV PATH="/opt/venv/bin:$PATH"
 ENV PYTHONPATH="/app/modules/ml-engine/src:/app/modules/ml-shared-lib/src"
 ENV PYTHONUNBUFFERED=1
-ENV AUDIT_LOG_PATH="/var/log/platform/audit_ml_engine.log"
+ENV AUDIT_LOG_PATH="/var/log/genovax/audit_ml_engine.log"
 
-USER platform
+USER genovax
 
 EXPOSE 8000
 

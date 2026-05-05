@@ -23,7 +23,7 @@ module "acm" {
   zone_id                   = "00000000000000000"
   
   common_tags = {
-    Project = "Platform"
+    Project = "GenovaX"
     Owner   = "DevOps Team"
   }
 }

@@ -26,8 +26,8 @@ RUN ./gradlew :app:bootJar --no-daemon -x test
 # Stage 2: Runtime
 FROM eclipse-temurin:21-jre-jammy
 
-LABEL maintainer="Platform Team" \
-      project="Platform" \
+LABEL maintainer="GenovaX Team" \
+      project="GenovaX" \
       module="app"
 
 # Installing curl to use healthcheck

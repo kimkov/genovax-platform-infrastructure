@@ -1,6 +1,6 @@
 ### AWS S3 Storage Module
 
-This module provides a production-ready, HIPAA-compliant implementation of **Amazon S3** storage for the Platform platform. 
+This module provides a production-ready, HIPAA-compliant implementation of **Amazon S3** storage for the GenovaX platform.
 It is specifically designed to handle sensitive medical data (ePHI) and backup files with a focus on security, durability, and regional redundancy.
 
 ### Features
@@ -28,7 +28,7 @@ module "s3" {
 
   providers = {
     aws           = aws
-    aws.secondary = Target region for replication
+    aws.secondary = "Target region for replication"
   }
 
   env          = "prod"
@@ -37,7 +37,7 @@ module "s3" {
   log_bucket_id = "prod-centralized-logs-bucket"
   
   common_tags = {
-    Project = "Platform"
+    Project = "GenovaX"
     Owner   = "Infrastructure Team"
   }
 }

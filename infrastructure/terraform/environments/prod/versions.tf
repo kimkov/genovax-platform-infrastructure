@@ -27,7 +27,7 @@ provider "aws" {
   default_tags {
     tags = {
       Environment  = var.env
-      Project     = "Platform"
+      Project     = "GenovaX"
       Stack       = "Dual-stack"
     }
   }

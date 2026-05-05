@@ -21,7 +21,7 @@ variable "common_tags" {
   description = "General tags for all resources"
   type = map(string)
   default = {
-    Project     = "Platform"
+    Project     = "GenovaX"
     Environment = "dev"
     ManagedBy   = "Terraform"
     Compliance  = "HIPAA-Ready"

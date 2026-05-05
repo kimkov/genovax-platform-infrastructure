@@ -2,7 +2,7 @@
 
 This module provides a secure and production-ready implementation of **Amazon Elastic Container Registry (ECR)**. 
 It is designed to manage container image repositories with built-in security features, automated lifecycle management, 
-and granular access control for the Platform ecosystem.
+and granular access control for the GenovaX ecosystem.
 
 ### Features
 
@@ -31,7 +31,7 @@ module "ecr" {
   ]
 
   common_tags = {
-    Project     = "Platform"
+    Project     = "GenovaX"
     Environment = "Production"
     ManagedBy   = "Terraform"
   }

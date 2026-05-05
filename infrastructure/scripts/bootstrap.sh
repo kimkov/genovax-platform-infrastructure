@@ -19,7 +19,7 @@ if [[ "${1:-}" == "-h" || "${1:-}" == "--help" ]]; then
 fi
 
 acquire_lock
-log_info "Platform Platform Bootstrap starting..."
+log_info "GenovaX Platform Bootstrap starting..."
 
 # Improved version check
 check_tool_version() {

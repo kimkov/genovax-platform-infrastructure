@@ -39,7 +39,7 @@ module "kms" {
 
   common_tags = {
     Environment = "prod"
-    Project     = "Platform"
+    Project     = "GenovaX"
     Compliance  = "HIPAA"
   }
 }

@@ -20,7 +20,7 @@ module "alb_controller" {
   cluster_name = "example-prod-cluster"
   vpc_id       = module.vpc.vpc_id
   aws_region   = "region"
-  role_arn     = "arn:aws:iam::000000000000:role/Platform-prod-lbc-role"
+  role_arn     = "arn:aws:iam::000000000000:role/GenovaX-prod-lbc-role"
 }
 ```
 
@@ -61,5 +61,5 @@ module "alb_controller" {
 
 1.  **Namespace**: The controller is deployed into the `kube-system` namespace to align with Kubernetes best practices for cluster-wide add-ons.
 2.  **Service Account**: The module creates a ServiceAccount named `aws-load-balancer-controller` and links it to the provided IAM Role via the `eks.amazonaws.com/role-arn` annotation.
-3.  **Networking**: The `ipAddressType` is explicitly set to `dualstack`. This is a critical configuration for the **Platform** infrastructure to support modern IPv6 networking requirements.
+3.  **Networking**: The `ipAddressType` is explicitly set to `dualstack`. This is a critical configuration for the **GenovaX** infrastructure to support modern IPv6 networking requirements.
 4.  **Stability**: The Helm chart version is locked to `1.7.2` to ensure consistent deployments across different environments and prevent breaking changes from upstream updates.

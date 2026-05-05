@@ -22,12 +22,12 @@ services:
     build:
       context: .
       dockerfile: infrastructure/docker/app.Dockerfile
-    image: example-app:1.0.0
-    container_name: example-app
+    image: genovax-app:1.0.0
+    container_name: genovax-app
     networks:
-      - example-network
+      - genovax-network
     environment:
-      - DB_URL=jdbc:postgresql://postgres:5432/example-db
+      - DB_URL=jdbc:postgresql://postgres:5432/genovax-db
       - DB_USER=${DB_USER}
       - DB_PASS=${DB_PASS}
       - SPRING_PROFILES_ACTIVE=prod
@@ -45,16 +45,16 @@ services:
       context: .
       dockerfile: infrastructure/docker/ml-engine.Dockerfile
     image: ml-engine:1.0.0
-    container_name: Example-ml-engine
+    container_name: genovax-ml-engine
     networks:
-      - example-network
+      - genovax-network
     environment:
       - ENCRYPTION_KEY=${ENCRYPTION_KEY}
-      - DB_URL=postgresql://${DB_USER}:${DB_PASS}@postgres:5432/example-db
+      - DB_URL=postgresql://${DB_USER}:${DB_PASS}@postgres:5432/genovax-db
     ports:
       - "8000:8000"
     volumes:
-      - ./logs/ml-engine:/var/log/example-ml-engine
+      - ./logs/ml-engine:/var/log/genovax-ml-engine
     depends_on:
       postgres:
         condition: service_healthy
@@ -65,7 +65,7 @@ services:
     image: localstack/localstack:3.2
     container_name: localstack_main
     networks:
-      - example-network
+      - genovax-network
     ports:
       - "127.0.0.1:4566:4566"            # Edge port for all AWS services
       - "127.0.0.1:4510-4559:4510-4559"  # Port range for external services (e.g. Lambda)
@@ -79,7 +79,7 @@ services:
       - "/var/run/docker.sock:/var/run/docker.sock"
 
 networks:
-  example-network:
+  genovax-network:
     driver: bridge
 
 volumes:

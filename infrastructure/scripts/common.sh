@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Centralized common functions for Platform infrastructure scripts
+# Centralized common functions for GenovaX infrastructure scripts
 
 set -euo pipefail
 

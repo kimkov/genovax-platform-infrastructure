@@ -1,13 +1,13 @@
 # Global Infrastructure (Global Layer)
 
-This layer contains AWS resources that are common to the entire Platform organization and are not tied to specific environments or regions. These components provide the baseline security and Terraform state management.
+This layer contains AWS resources that are common to the entire GenovaX organization and are not tied to specific environments or regions. These components provide the baseline security and Terraform state management.
 
 ## Core Components
 
 ### 1. State Management
 Files: `s3-backend.tf`
-- **S3 Bucket (`Platform-terraform-state-storage`):** Centralized storage for `.tfstate` files with versioning and KMS encryption enabled.
-- **DynamoDB Table (`Platform-terraform-state-lock`):** Provides a state locking mechanism to prevent conflicts during concurrent Terraform runs.
+- **S3 Bucket (`GenovaX-terraform-state-storage`):** Centralized storage for `.tfstate` files with versioning and KMS encryption enabled.
+- **DynamoDB Table (`GenovaX-terraform-state-lock`):** Provides a state locking mechanism to prevent conflicts during concurrent Terraform runs.
 
 ### 2. Security and IAM
 Files: `iam.tf`, `security-settings.tf`

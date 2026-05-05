@@ -22,7 +22,7 @@ resource "aws_kms_alias" "terraform_state" {
 
 # S3 bucket for state storage
 resource "aws_s3_bucket" "terraform_state" {
-  bucket = "Platform-terraform-state-storage"
+  bucket = "GenovaX-terraform-state-storage"
 
   # Protection against accidental deletion
   lifecycle {
@@ -83,7 +83,7 @@ resource "aws_s3_bucket_public_access_block" "state" {
 
 # DynamoDB for state locking
 resource "aws_dynamodb_table" "terraform_state_lock" {
-  name = "Platform-terraform-state-lock"
+  name = "GenovaX-terraform-state-lock"
   billing_mode = "PAY_PER_REQUEST"
   hash_key = "LockID"
 

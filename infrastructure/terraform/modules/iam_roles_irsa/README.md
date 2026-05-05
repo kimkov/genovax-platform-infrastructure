@@ -36,7 +36,7 @@ module "iam_roles_irsa" {
 
   common_tags = {
     Environment = "prod"
-    Project     = "Platform"
+    Project     = "GenovaX"
   }
 }
 ```

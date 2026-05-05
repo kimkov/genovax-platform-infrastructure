@@ -1,7 +1,7 @@
-# Disaster Recovery (DR) Strategy: Platform Medical Data Platform
+# Disaster Recovery (DR) Strategy: GenovaX Medical Data Platform
 
 ## 1. Introduction
-This document outlines the Disaster Recovery (DR) strategy for the Platform platform. Given our handling of Protected Health Information (ePHI) and HIPAA compliance requirements, our primary focus is on data integrity and minimizing downtime during regional AWS outages.
+This document outlines the Disaster Recovery (DR) strategy for the GenovaX platform. Given our handling of Protected Health Information (ePHI) and HIPAA compliance requirements, our primary focus is on data integrity and minimizing downtime during regional AWS outages.
 
 ## 2. Key Metrics (RPO and RTO)
 
@@ -16,7 +16,7 @@ This document outlines the Disaster Recovery (DR) strategy for the Platform plat
 
 ## 3. Recovery Architecture (Cross-Region Strategy)
 
-To ensure system resilience during a full regional failure, Platform uses a **Pilot Light / Warm Standby** strategy using a secondary AWS region.
+To ensure system resilience during a full regional failure, GenovaX uses a **Pilot Light / Warm Standby** strategy using a secondary AWS region.
 
 ### 3.1. Data Storage (Amazon S3)
 *   **Mechanism:** Cross-Region Replication (CRR).

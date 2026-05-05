@@ -1,14 +1,14 @@
-# Platform Platform
+# GenovaX Platform
 
-[![Build Status](https://github.com/Platform/Platform/actions/workflows/main.yml/badge.svg)](https://github.com/Platform/Platform/actions/workflows/main.yml)
-[![Code Coverage](https://img.shields.io/codecov/c/github/Platform/Platform)](https://codecov.io/gh/Platform/Platform)
-[![IaC Security Scan](https://github.com/Platform/Platform/actions/workflows/terraform-security.yml/badge.svg)](https://github.com/Platform/Platform/actions/workflows/terraform-security.yml)
+[![Build Status](https://github.com/GenovaX/genovax-platform-infrastructure/actions/workflows/main.yml/badge.svg)](https://github.com/GenovaX/genovax-platform-infrastructure/actions/workflows/main.yml)
+[![Code Coverage](https://img.shields.io/codecov/c/github/GenovaX/genovax-platform-infrastructure)](https://codecov.io/gh/GenovaX/genovax-platform-infrastructure)
+[![IaC Security Scan](https://github.com/GenovaX/genovax-platform-infrastructure/actions/workflows/terraform-security.yml/badge.svg)](https://github.com/GenovaX/genovax-platform-infrastructure/actions/workflows/terraform-security.yml)
 [![Checkov](https://img.shields.io/badge/security-Checkov-brightgreen)](https://www.checkov.io/)
 [![TFLint](https://img.shields.io/badge/security-TFLint-blue)](https://github.com/terraform-linters/tflint)
 [![Java Version](https://img.shields.io/badge/Java-21-orange.svg)](https://adoptium.net/temurin/releases/?version=21)
 [![Node Version](https://img.shields.io/badge/Node-20+-green.svg)](https://nodejs.org/)
 
-**Platform** is a highly scalable, modern platform for medical technology and bioinformatics. 
+**GenovaX** is a highly scalable, modern platform for medical technology and bioinformatics.
 The system integrates patient data management, compliance auditing, and research tools into a single secure ecosystem.
 
 ---
@@ -27,7 +27,6 @@ The system integrates patient data management, compliance auditing, and research
 - [📂 Repository Structure](#-repository-structure)
 - [📖 API Documentation](#-api-documentation)
 - [🔄 CI/CD & Deployment](#-cicd--deployment)
-- [🤝 Contributing](#-contributing)
 - [📖 Internal Documentation](#-internal-documentation)
 - [🆘 Troubleshooting & Support](#-troubleshooting--support)
 - [⚖️ License](#-license)
@@ -252,7 +251,6 @@ tflint --recursive
 
 *   `CHANGELOG.md` — Release history and version management.
 *   `infrastructure/` — Terraform modules, Kubernetes manifests, and technical documentation.
-*   `CONTRIBUTING.md` — Guidelines for contributors.
 *   `DR_STRATEGY.md` — Disaster Recovery Strategy.
 
 ---
@@ -275,12 +273,6 @@ The project utilizes GitHub Actions to automate the lifecycle:
 1.  **CI:** Runs tests, linters, and security scans on every Pull Request.
 2.  **CD:** Automatically deploys to `staging` after merging into the `main` branch.
 3.  **Production:** Deployment to production is performed manually after Approval via the CI/CD pipeline.
-
----
-
-### 🤝 Contributing
-
-Interested in contributing? Please read our [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduct and the process for submitting pull requests.
 
 ---
 
@@ -328,4 +320,4 @@ Interested in contributing? Please read our [CONTRIBUTING.md](CONTRIBUTING.md) f
 ---
 
 ### ⚖️ License
-This project is **Proprietary**. All rights reserved by Platform Platform. See [LICENSE](LICENSE) for details.
+This project is **Proprietary**. All rights reserved by GenovaX Platform. See [LICENSE](LICENSE) for details.

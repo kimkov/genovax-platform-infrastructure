@@ -1,7 +1,7 @@
 # Security Policy
 
 ## Overview
-Platform takes the security and privacy of patient data (PII/PHI) extremely seriously. As a MedTech platform, we are committed to maintaining the highest security standards, including **HIPAA compliance**. This policy outlines our process for reporting and handling security vulnerabilities.
+GenovaX takes the security and privacy of patient data (PII/PHI) extremely seriously. As a MedTech platform, we are committed to maintaining the highest security standards, including **HIPAA compliance**. This policy outlines our process for reporting and handling security vulnerabilities.
 
 ## Supported Versions
 We provide security updates for the following versions:
@@ -33,7 +33,7 @@ We follow the principles of **Coordinated Vulnerability Disclosure (CVD)**.
     *   **Critical (HIPAA impact):** Fix within **7 days**.
     *   **High:** Fix within **14 days**.
     *   **Medium/Low:** Fix in the next scheduled release.
-*   **Transparency:** Security advisories will be published via [GitHub Security Advisories](https://github.com/Platform/Platform/security/advisories).
+*   **Transparency:** Security advisories will be published via [GitHub Security Advisories](https://github.com/GenovaX/genovax-platform-infrastructure/security/advisories).
 
 ## Policy & Safe Harbor
 ### Scope
@@ -61,4 +61,4 @@ To maintain HIPAA compliance, we employ:
 *   **Audit Logging:** All access to PII is recorded in a tamper-proof audit trail.
 
 ---
-*Last Updated: April 30, 2026*
+*Last Updated: May 5, 2026*

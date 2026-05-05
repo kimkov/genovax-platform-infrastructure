@@ -31,7 +31,7 @@ variable "common_tags" {
   description = "General tags for all resources"
   type = map(string)
   default = {
-    Project            = "Platform"
+    Project            = "GenovaX"
     DataClassification = "PHI"
     Compliance         = "HIPAA"
     ManagedBy          = "Terraform"
@@ -41,7 +41,7 @@ variable "common_tags" {
 variable "owner" {
   description = "Resource Owner (Team or Department)"
   type = string
-  default = "PlatformTeam"
+  default = "GenovaXTeam"
 }
 
 variable "enable_ipv6" {

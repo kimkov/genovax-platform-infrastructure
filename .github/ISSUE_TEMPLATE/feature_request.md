@@ -1,6 +1,6 @@
 ---
 name: "🚀 Feature Request"
-about: "Suggest an idea for the Platform platform"
+about: "Suggest an idea for the GenovaX platform"
 title: "[FEAT] "
 labels: ["enhancement"]
 assignees: ""

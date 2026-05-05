@@ -32,7 +32,7 @@ module "waf" {
   kms_key_arn = "arn:aws:kms:region:000000000000:key/your-custom-s3-key"
 
   common_tags = {
-    Project     = "Platform"
+    Project     = "GenovaX"
     Compliance  = "HIPAA"
     Environment = "Production"
   }

@@ -1,6 +1,6 @@
 ### AWS VPC Infrastructure Module
 
-This module provides a secure, multi-AZ networking foundation for the Platform platform. It is designed to meet HIPAA compliance requirements 
+This module provides a secure, multi-AZ networking foundation for the GenovaX platform. It is designed to meet HIPAA compliance requirements
 by ensuring strict network isolation, comprehensive traffic auditing, and high availability.
 
 ### Features
@@ -34,8 +34,8 @@ module "vpc" {
   kms_key_arn        = "arn:aws:kms:region-1:000000000000:key/your-key-id"
 
   common_tags = {
-    Project = "Platform"
-    Owner   = "PlatformTeam"
+    Project = "GenovaX"
+    Owner   = "GenovaXTeam"
   }
 }
 ```
@@ -80,7 +80,7 @@ module "vpc" {
 | **`kms_key_arn`**                      | ARN of the KMS key for encrypting resources (reserved for future use) | `string`       | n/a              | **yes**    |
 | **`log_bucket_id`**                    | The ID (name) of the S3 bucket where VPC Flow Logs will be stored     | `string`       | n/a              | **yes**    |
 | **`common_tags`**                      | General tags for all resources                                        | `map(string)`  | `{...}`          | no         |
-| **`owner`**                            | Resource Owner (Team or Department)                                   | `string`       | `"PlatformTeam"` | no         |
+| **`owner`**                            | Resource Owner (Team or Department)                                   | `string`       | `"GenovaXTeam"` | no         |
 | **`enable_ipv6`**                      | Enables IPv6 support for the VPC and subnets                          | `bool`         | `true`           | no         |
 | **`assign_generated_ipv6_cidr_block`** | Requests an Amazon-provided IPv6 CIDR block for the VPC               | `bool`         | `true`           | no         |
 

@@ -36,7 +36,7 @@ module "monitoring" {
 
   common_tags = {
     Environment = "prod"
-    Project     = "Platform"
+    Project     = "GenovaX"
     ManagedBy   = "Terraform"
   }
 }

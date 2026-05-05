@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Shared configuration for Platform infrastructure scripts
+# Shared configuration for GenovaX infrastructure scripts
 
 # Environment
 export ENVIRONMENT="${ENVIRONMENT:-dev}"
@@ -12,9 +12,9 @@ export TERRAFORM_REQUIRED="1.5.0"
 export PNPM_REQUIRED="9.0.0"
 
 # Database Configuration
-export DB_CONTAINER="${DB_CONTAINER:-platform-db}"
-export DB_USER="${DB_USER:-platform_user}"
-export DB_NAME="${DB_NAME:-platform}"
+export DB_CONTAINER="${DB_CONTAINER:-genovax-db}"
+export DB_USER="${DB_USER:-genovax_user}"
+export DB_NAME="${DB_NAME:-genovax}"
 
 # Paths (relative to PROJECT_ROOT)
 export CERT_DIR="infrastructure/certs"

@@ -1,7 +1,7 @@
 variable "project_name" {
   description = "Project name"
   type = string
-  default = "Platform"
+  default = "GenovaX"
 }
 
 variable "owner" {
@@ -32,7 +32,7 @@ variable "common_tags" {
   description = "Common tags for all resources"
   type = map(string)
   default = {
-    Project = "Platform"
+    Project = "GenovaX"
     ManagedBy = "Terraform"
     Type = "Global"
     Owner = "Cloud-Architecture-Team"

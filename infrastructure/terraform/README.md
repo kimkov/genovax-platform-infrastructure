@@ -1,6 +1,6 @@
-### Platform Infrastructure - Terraform
+### GenovaX Infrastructure - Terraform
 
-This repository contains the Infrastructure as Code (IaC) configuration for the **Platform** project. We use **Terraform** 
+This repository contains the Infrastructure as Code (IaC) configuration for the **GenovaX** project. We use **Terraform** 
 to manage AWS resources, ensuring scalability, security, and reproducibility across all environments.
 
 ### Project Architecture

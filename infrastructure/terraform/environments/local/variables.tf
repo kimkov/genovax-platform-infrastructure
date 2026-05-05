@@ -14,7 +14,7 @@ variable "common_tags" {
   description = "Common tags for all local resources"
   type = map(string)
   default = {
-    Project     = "Platform"
+    Project     = "GenovaX"
     Environment = "local"
     ManagedBy   = "Terraform"
     Compliance  = "Local-Dev"

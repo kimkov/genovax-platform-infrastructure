@@ -44,7 +44,7 @@ module "aws_backup" {
   ]
 
   common_tags = {
-    Project     = "Platform"
+    Project     = "GenovaX"
     Environment = "Production"
     ManagedBy   = "Terraform"
   }

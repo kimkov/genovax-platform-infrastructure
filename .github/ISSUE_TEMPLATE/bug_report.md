@@ -1,6 +1,6 @@
 ---
 name: "🐛 Bug Report"
-about: "Report a bug to help us improve the Platform platform"
+about: "Report a bug to help us improve the GenovaX platform"
 title: "[BUG] "
 labels: ["bug", "triage"]
 assignees: ""
@@ -39,7 +39,7 @@ assignees: ""
 </details>
 
 ## 💻 Environment
-- **Platform/Environment:** (e.g., Local/Docker, Dev, Staging)
+- **GenovaX/Environment:** (e.g., Local/Docker, Dev, Staging)
 - **Version/Tag:** (e.g., v1.2.0 or commit hash)
 - **Component:** (e.g., Core API, Frontend, ML Engine, Infrastructure)
 - **Browser/OS:** (if applicable)

@@ -31,7 +31,7 @@ module "vpc_endpoints" {
   route_table_ids = module.vpc.private_route_table_ids
 
   common_tags = {
-    Project     = "{Platform}"
+    Project     = "GenovaX"
     Environment = "Production"
     ManagedBy   = "Terraform"
   }
