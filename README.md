@@ -251,15 +251,9 @@ tflint --recursive
 ### 📂 Repository Structure
 
 *   `CHANGELOG.md` — Release history and version management.
-*   `app/` — Core service and API Gateway.
-*   `frontend/` — Monorepo for frontend applications (Admin, Clinician, Patient).
 *   `infrastructure/` — Terraform modules, Kubernetes manifests, and technical documentation.
-*   `modules/` — Functional blocks and business logic:
-    *   **Core Services**: `identity-access` (IAM), `compliance-audit`, `ehr-management`, `billing-management`, `patient-profile-management`, `scheduling-management`.
-    *   **Machine Learning (ML) Ecosystem**:
-        *   *Services*: `ml-gateway`, `ml-engine`, `ml-vision-service`, `ml-nlp-service`, `ml-analytics-service`.
-        *   *Resources*: `ml-data-engineering`, `ml-shared-lib`.
-    *   **Shared Modules**: `shared-kernel`, `shared-common`, `shared-security`, `shared-audit`, `shared-events`, `shared-utils`.
+*   `CONTRIBUTING.md` — Guidelines for contributors.
+*   `DR_STRATEGY.md` — Disaster Recovery Strategy.
 
 ---
 
@@ -292,8 +286,8 @@ Interested in contributing? Please read our [CONTRIBUTING.md](CONTRIBUTING.md) f
 
 ### 📖 Internal Documentation
 
-*   [Identity & Access Management](./modules/identity-access/README.md)
-*   [Compliance & Audit System](./modules/compliance-audit/README.md)
+*   [Identity & Access Management](./infrastructure/docs/adr/ADR%20004:%20Identity%20and%20Access%20Management.md)
+*   [Compliance & Audit System](./infrastructure/docs/adr/ADR%20006:%20Continuous%20Security%20Audit%20and%20Monitoring.md)
 *   [Disaster Recovery Strategy](./DR_STRATEGY.md)
 *   [Infrastructure Deep Dive](./infrastructure/terraform/README.md)
 
