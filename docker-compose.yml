@@ -1,0 +1,86 @@
+services:
+  postgres:
+    image: postgres:18.1
+    container_name: platform-db
+    networks:
+      - platform-network
+    environment:
+      POSTGRES_DB: DB_NAME
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASS}
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-username} -d password"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  app:
+    build:
+      context: .
+      dockerfile: infrastructure/docker/app.Dockerfile
+    image: example-app:1.0.0
+    container_name: example-app
+    networks:
+      - example-network
+    environment:
+      - DB_URL=jdbc:postgresql://postgres:5432/example-db
+      - DB_USER=${DB_USER}
+      - DB_PASS=${DB_PASS}
+      - SPRING_PROFILES_ACTIVE=prod
+      - AWS_ENDPOINT=http://localstack:4566
+      - AWS_REGION=region
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+
+  ml-engine:
+    build:
+      context: .
+      dockerfile: infrastructure/docker/ml-engine.Dockerfile
+    image: ml-engine:1.0.0
+    container_name: Example-ml-engine
+    networks:
+      - example-network
+    environment:
+      - ENCRYPTION_KEY=${ENCRYPTION_KEY}
+      - DB_URL=postgresql://${DB_USER}:${DB_PASS}@postgres:5432/example-db
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./logs/ml-engine:/var/log/example-ml-engine
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+
+
+  localstack:
+    image: localstack/localstack:3.2
+    container_name: localstack_main
+    networks:
+      - example-network
+    ports:
+      - "127.0.0.1:4566:4566"            # Edge port for all AWS services
+      - "127.0.0.1:4510-4559:4510-4559"  # Port range for external services (e.g. Lambda)
+    environment:
+      - SERVICES=s3,sqs,sns,cognito-idp   # List of required services (comma separated)
+      - DEBUG=1                          # Enabling verbose logging
+      - DOCKER_HOST=unix:///var/run/docker.sock
+      - AWS_DEFAULT_REGION=region
+    volumes:
+      - "./infrastructure/localstack/data/localstack_data:/var/lib/localstack"
+      - "/var/run/docker.sock:/var/run/docker.sock"
+
+networks:
+  example-network:
+    driver: bridge
+
+volumes:
+  pgdata:

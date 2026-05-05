@@ -1,0 +1,77 @@
+name: "FinOps: Cost Analysis"
+
+on:
+  pull_request:
+    paths:
+      - 'infrastructure/terraform/**'
+
+# Prevents multiple checks from running simultaneously for a single PR
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  infracost:
+    name: Infracost Analysis
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+
+    strategy:
+      matrix:
+        environment: [dev, prod]
+
+    env:
+      TF_ROOT: infrastructure/terraform/environments/${{ matrix.environment }}
+
+    steps:
+      - name: Checkout base branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.base.ref }}
+
+      - name: Setup Infracost
+        uses: infracost/actions/setup@v3
+        with:
+          api-key: ${{ secrets.INFRACOST_API_KEY }}
+          currency: USD
+
+      # Generate a cost baseline from the main branch (main/master)
+      - name: Generate Infracost JSON (Baseline)
+        run: |
+          infracost breakdown --path=${{ env.TF_ROOT }} \
+                            --format=json \
+                            --usage-file=${{ env.TF_ROOT }}/infracost-usage.yml \
+                            --out-file=/tmp/infracost-base-${{ matrix.environment }}.json
+        continue-on-error: true
+
+      - name: Checkout PR branch
+        uses: actions/checkout@v4
+
+      # Generating a cost estimate for the current PR
+      - name: Generate Infracost JSON (PR)
+        run: |
+          infracost breakdown --path=${{ env.TF_ROOT }} \
+                            --usage-file=${{ env.TF_ROOT }}/infracost-usage.yml \
+                            --out-file=/tmp/infracost-pr-${{ matrix.environment }}.json
+
+      # Compare and comment on PR
+      - name: Post Infracost comment
+        run: |
+          POLICY_FLAG=""
+          if [ -f "infrastructure/terraform/policies/cost-policy.rego" ]; then
+            POLICY_FLAG="--policy-path=infrastructure/terraform/policies/cost-policy.rego"
+          fi
+
+          infracost diff --path=/tmp/infracost-pr-${{ matrix.environment }}.json \
+                        --compare-to=/tmp/infracost-base-${{ matrix.environment }}.json \
+                        --format=github-comment \
+                        $POLICY_FLAG \
+                        --out-file=/tmp/infracost-comment-${{ matrix.environment }}.md
+
+      - name: Comment on PR
+        uses: thollander/actions-comment-pull-request@v3
+        with:
+          file_path: /tmp/infracost-comment-${{ matrix.environment }}.md
+          comment_tag: infracost_report_${{ matrix.environment }}

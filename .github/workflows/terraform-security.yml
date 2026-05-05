@@ -1,0 +1,30 @@
+name: "IaC Security Scan"
+
+on:
+  pull_request:
+    paths:
+      - 'infrastructure/terraform/**'
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup TFLint
+        uses: terraform-linters/setup-tflint@v3
+        with:
+          tflint_version: v0.47.0
+
+      - name: Run TFLint
+        run: |
+          tflint --init
+          tflint -f compact --recursive
+
+      - name: Run Checkov (HIPAA Scan)
+        uses: bridgecrewio/checkov-action@master
+        with:
+          directory: infrastructure/terraform
+          framework: terraform
+          soft_fail: false
+          output_format: cli

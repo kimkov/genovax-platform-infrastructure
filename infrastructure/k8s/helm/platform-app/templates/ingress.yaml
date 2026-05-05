@@ -1,0 +1,62 @@
+{{- if .Values.ingress.enabled }}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ include "platform-app.fullname" . }}
+  labels:
+    {{ include "platform-app.labels" . | nindent 4 }}
+  annotations:
+    {{- /* Standard annotations from values.yaml*/}}
+    {{- with .Values.ingress.annotations }}
+    {{ toYaml . | nindent 4 }}
+    {{- end }}
+
+    {{ /* Synchronization with AWS infrastructure */ -}}
+    {{- if .Values.alb.certificateArn }}
+    alb.ingress.kubernetes.io/certificate-arn: {{ .Values.alb.certificateArn | quote }}
+    {{- end }}
+
+    {{- if .Values.alb.wafAclArn }}
+    alb.ingress.kubernetes.io/wafv2-acl-arn: {{ .Values.alb.wafAclArn | quote }}
+    {{- end }}
+
+    {{- if .Values.alb.logBucketName }}
+    {{ /* Access logging */ -}}
+    alb.ingress.kubernetes.io/load-balancer-attributes: {{ printf "access_logs.s3.enabled=true,access_logs.s3.bucket=%s,access_logs.s3.prefix=alb-logs" .Values.alb.logBucketName | quote }}
+    {{- end }}
+
+    {{- if .Values.alb.sslRedirect }}
+    {{ /* Setting up an action for the HTTP -> HTTPS redirect */ -}}
+    alb.ingress.kubernetes.io/actions.ssl-redirect: {{ .Values.alb.sslRedirect | quote }}
+    {{- end }}
+
+    {{ /* Additional fault tolerance parameters from old manifests */ -}}
+    alb.ingress.kubernetes.io/healthcheck-interval-seconds: "15"
+    alb.ingress.kubernetes.io/success-codes: "200"
+spec:
+  ingressClassName: {{ .Values.ingress.className }}
+  rules:
+    {{- range .Values.ingress.hosts }}
+    - host: {{ .host | quote }}
+      http:
+        paths:
+          {{- if $.Values.alb.sslRedirect }}
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: ssl-redirect
+                port:
+                  name: use-annotation
+          {{- end }}
+          {{- range .paths}}
+          - path: {{ .path }}
+            pathType: {{ .pathType }}
+            backend:
+              service:
+                name: {{ include "platform-app.fullname" $ }}
+                port:
+                  number: {{ $.Values.service.port }}
+          {{- end}}
+    {{- end }}
+    {{- end }}

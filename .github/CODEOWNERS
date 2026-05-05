@@ -1,0 +1,64 @@
+# Platform Code Owners Configuration
+# This file defines individuals or teams that are responsible for code in the repository.
+# See https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+# ==========================================
+# 🌍 Global Owners
+# ==========================================
+# Fallback owners for any file not covered below
+*                                       @platform/core-maintainers
+
+# ==========================================
+# 🏗 Infrastructure & DevOps
+# ==========================================
+# Terraform, Kubernetes, and Helm configurations
+/infrastructure/                        @platform/cloud-architects
+/infrastructure/terraform/              @platform/cloud-architects
+/infrastructure/k8s/                    @platform/cloud-architects
+/docker-compose.yml                     @platform/cloud-architects
+
+# GitHub Actions Workflows
+/.github/workflows/                     @platform/cloud-architects @platform/security-leads
+
+# ==========================================
+# 🛡 Security & Compliance (HIPAA Critical)
+# ==========================================
+# IAM, Audit, and Security modules
+/modules/identity-access/               @platform/security-leads
+/modules/compliance-audit/               @platform/security-leads
+/modules/shared-security/               @platform/security-leads
+/modules/shared-audit/                  @platform/security-leads
+/SECURITY.md                            @platform/security-leads
+
+# ==========================================
+# 💻 Frontend Application
+# ==========================================
+/frontend/                              @platform/frontend-leads
+
+# ==========================================
+# 🤖 Machine Learning Ecosystem
+# ==========================================
+/modules/ml-gateway/                    @platform/ml-engineers
+/modules/ml-engine/                     @platform/ml-engineers
+/modules/ml-vision-service/             @platform/ml-engineers
+/modules/ml-nlp-service/                @platform/ml-engineers
+/modules/ml-analytics-service/          @platform/ml-engineers
+/modules/ml-data-engineering/           @platform/ml-engineers
+/modules/ml-shared-lib/                 @platform/ml-engineers
+
+# ==========================================
+# 📦 Build System & Dependencies
+# ==========================================
+/build.gradle                           @platform/core-maintainers
+/settings.gradle                        @platform/core-maintainers
+/gradle/                                @platform/core-maintainers
+/gradlew                                @platform/core-maintainers
+/gradlew.bat                            @platform/core-maintainers
+
+# ==========================================
+# 📚 Documentation & Legal
+# ==========================================
+/README.md                              @platform/core-maintainers
+/CONTRIBUTING.md                        @platform/core-maintainers
+/LICENSE                                @platform/core-maintainers
+/DR_STRATEGY.md                         @platform/cloud-architects

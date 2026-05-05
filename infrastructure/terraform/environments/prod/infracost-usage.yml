@@ -1,0 +1,22 @@
+version: 0.1
+resource_usage:
+
+  # The main repository of medical data
+  module.s3_medical_data.aws_s3_bucket.medical_data:
+    monthly_gb: 5000 # 5 TB PHI Data
+    monthly_get_requests: 200000
+    monthly_put_requests: 100000
+    # РReplication to another region for Disaster Recovery
+    replication_storage_gb: 500
+
+# Velero Backup Storage
+  module.s3_velero_backup.aws_s3_bucket.velero_backups:
+    monthly_gb: 5000
+
+# NAT Gateway (traffic between availability zones and Internet access)
+  module.vpc.aws_nat_gateway.main[0]:
+    monthly_data_processed_gb: 1000
+  module.vpc.aws_nat_gateway.main[1]:
+    monthly_data_processed_gb: 1000
+  module.vpc.aws_nat_gateway.main[2]:
+    monthly_data_processed_gb: 1000

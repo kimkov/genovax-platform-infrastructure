@@ -1,3 +1,9 @@
+# IDE files
+.idea/
+.vscode/
+*.swp
+*.swo
+
 # Local .terraform directories
 .terraform/
 
