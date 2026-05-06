@@ -88,24 +88,19 @@ data "aws_iam_policy_document" "eks_kms_policy" {
     resources = ["*"]
   }
 
-  # Decryption permission for EKS and CI/CD nodes
+  # Decryption permission for EKS nodes and specific principals (Least Privilege)
   dynamic "statement" {
-    for_each = var.eks_node_role_arn != null ? [1] : []
+    for_each = length(var.ecr_allowed_read_principals) > 0 ? [1] : []
     content {
-      sid    = "AllowECRDecrypt"
+      sid    = "AllowSpecificNodeAndCIPrincipals"
       effect = "Allow"
       principals {
         type        = "AWS"
-        identifiers = ["*"]
+        # Using explicit ARNs instead of wildcards for better security and auditability
+        identifiers = var.ecr_allowed_read_principals
       }
       actions   = ["kms:Decrypt", "kms:DescribeKey"]
       resources = ["*"]
-
-      condition {
-        test     = "ArnLike"
-        values = var.ecr_allowed_read_principals
-        variable = "aws:PrincipalArn"
-      }
     }
   }
 }

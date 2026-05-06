@@ -307,6 +307,21 @@ The project utilizes GitHub Actions to automate the lifecycle:
 
 ---
 
+### 🚀 Future Scalability & Roadmap
+
+As the platform evolves, several strategic initiatives are planned to enhance security, cost-efficiency, and operational excellence:
+
+*   **Multi-Account Strategy:** Migration to **AWS Organizations** to isolate environments (`dev`, `prod`, `security`, `shared-services`) into separate AWS accounts. This will further reduce the blast radius and simplify compliance auditing.
+*   **FinOps & Cost Optimization:** 
+    - Integration of **AWS Compute Optimizer** to right-size EKS nodes and RDS instances.
+    - Implementation of **Spot Instances** for non-critical Kubernetes workloads (e.g., batch processing, dev environments) to reduce compute costs by up to 70-90%.
+*   **Service Mesh (Istio / AWS App Mesh):** Adoption of a Service Mesh to provide:
+    - **mTLS (Mutual TLS):** Automatic encryption and identity verification for all pod-to-pod communications.
+    - **Advanced Traffic Management:** Canary deployments, circuit breaking, and fine-grained rate limiting.
+    - **Observability:** Deep insights into service-level metrics and distributed tracing.
+
+---
+
 ### 🆘 Troubleshooting & Support
 
 1. **Port Conflicts:** Ensure port `5432` (PostgreSQL) and `6379` (Redis) are free before running Docker Compose.

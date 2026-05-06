@@ -202,6 +202,8 @@ locals {
       "arn:aws:policy/AWSWAFConsoleFullAccess"
     ]
     Support       = ["arn:aws:policy/AWSSupportAccess"]
+    # Note: PowerUserAccess is used for broad access, but in a real-world scenario 
+    # it should be scoped down using ResourceTag/Project conditions.
     Developer     = ["arn:aws:policy/PowerUserAccess"]
     Architect     = ["arn:aws:policy/PowerUserAccess"]
   }
