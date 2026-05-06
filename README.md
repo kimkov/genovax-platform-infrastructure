@@ -8,16 +8,17 @@
 [![Java Version](https://img.shields.io/badge/Java-21-orange.svg)](https://adoptium.net/temurin/releases/?version=21)
 [![Node Version](https://img.shields.io/badge/Node-20+-green.svg)](https://nodejs.org/)
 
-**GenovaX** is a highly scalable, modern platform for medical technology and bioinformatics.
-The system integrates patient data management, compliance auditing, and research tools into a single secure ecosystem.
+**GenovaX** is a highly scalable, modern platform designed for medical technology, bioinformatics, and other **regulated environments** with **strict compliance requirements**. The system integrates data management, compliance auditing, and research tools into a single secure ecosystem.
 
 ---
 
 ## 📋 Table of Contents
 - [🏗 Architecture Overview](#-architecture-overview)
-- [🛡 Data Flow & PHI Handling](#-data-flow--phi-handling)
+- [🎯 Design Philosophy](#-design-philosophy)
+- [🛡 Data Flow & Sensitive Data Handling](#-data-flow--sensitive-data-handling)
 - [💻 Tech Stack](#-tech-stack)
-- [⚖️ Compliance & Security](#-compliance--security)
+- [⚖️ Compliance & Security Controls Mapping](#-compliance--security-controls-mapping)
+- [🚀 Production Readiness](#-production-readiness)
 - [🛠 Prerequisites](#-prerequisites)
 - [🚀 Quick Start & Environment](#-quick-start--environment)
 - [📦 Deployment & Database Migrations](#-deployment--database-migrations)
@@ -37,6 +38,9 @@ The system integrates patient data management, compliance auditing, and research
 
 The platform is designed with High Availability and strict data security requirements in mind.
 
+> [!NOTE]
+> This repository contains the core platform infrastructure (IaC) and a reference implementation of a high-security application to demonstrate end-to-end integration in regulated environments.
+
 ```mermaid
 graph TD
     User([User]) --> CloudFront[AWS CloudFront]
@@ -49,22 +53,28 @@ graph TD
     end
     Core --> RDS[(AWS RDS - PostgreSQL)]
     Core --> Redis[(AWS ElastiCache - Redis)]
-    ML --> S3_Data[AWS S3 - Medical Data]
+    ML --> S3_Data[AWS S3 - Sensitive Data]
     Core --> CW[AWS CloudWatch - Logs/Metrics]
 ```
 
 *   **Backend:** Microservices architecture based on Spring Boot 3.5.
 *   **Frontend:** Monorepo using Next.js/React for various roles (Admin, Clinician, Patient).
 *   **Infrastructure:** Fully automated deployment via Terraform on AWS (EKS, RDS, S3).
-*   **Data:** Isolated PostgreSQL schemas to separate PII (Personally Identifiable Information) and system data (`iam`, `audit`, `patient_pii`).
+*   **Data:** Isolated PostgreSQL schemas to separate PII (Personally Identifiable Information) and system data.
 
 [**🔗 View Detailed Architecture Diagram**](./infrastructure/docs/architecture/Architecture.png)
 
 ---
 
-### 🛡 Data Flow & PHI Handling
+### 🎯 Design Philosophy
+- **Goals:** Compliance-aligned technical controls (encryption, audit, integrity), Least Privilege (IAM/IRSA), Infrastructure-as-Code (100% automation), Private-first networking.
+- **Non-Goals:** Legal/Compliance attestation (this is a technical framework, not a legal certificate), organization-level policy management (BAA, etc.).
 
-The platform ensures HIPAA compliance through strict data flow management, multi-layered encryption, and automated PII/PHI masking.
+---
+
+### 🛡 Data Flow & Sensitive Data Handling
+
+The platform ensures data protection through strict flow management, multi-layered encryption, and automated sensitive data masking.
 
 #### Data Flow Diagram (DFD)
 
@@ -74,7 +84,7 @@ graph LR
         User((User/Client))
     end
 
-    subgraph AWS_Cloud ["AWS Cloud (HIPAA Compliant)"]
+    subgraph AWS_Cloud ["AWS Cloud (High-Compliance Design)"]
         subgraph Perimeter ["Edge Security"]
             WAF[AWS WAF]
             TLS13{{TLS 1.3 - In Transit}}
@@ -90,11 +100,11 @@ graph LR
 
             subgraph Storage ["Data At Rest (AES-256)"]
                 RDS[(RDS PostgreSQL<br/>KMS Encrypted)]
-                S3_Medical[(S3 Medical Data<br/>KMS Encrypted)]
+                S3_Data[(S3 Sensitive Data<br/>KMS Encrypted)]
             end
 
             subgraph Monitoring ["Observability"]
-                CW[CloudWatch Logs<br/><b>PHI Masking</b>]
+                CW[CloudWatch Logs<br/><b>Sensitive Data Masking</b>]
             end
         end
     end
@@ -102,10 +112,10 @@ graph LR
     User -- "HTTPS/TLS 1.3" --> TLS13
     TLS13 --> WAF
     WAF --> ALB
-    ALB -- "mTLS / Internal" --> Core
+    ALB -- "Internal Network" --> Core
     Core -- "JDBC (Encrypted)" --> RDS
-    Core -- "PHI Processing" --> ML
-    ML -- "S3 SDK (Encrypted)" --> S3_Medical
+    Core -- "Data Processing" --> ML
+    ML -- "S3 SDK (Encrypted)" --> S3_Data
     Core -- "Async Events" --> Audit
     Core -- "Filtered Streams" --> CW
     ML -- "Filtered Streams" --> CW
@@ -114,17 +124,36 @@ graph LR
     style User fill:#f9f,stroke:#333,stroke-width:2px
     style TLS13 fill:#dfd,stroke:#3c3,stroke-dasharray: 5 5
     style RDS fill:#ddf,stroke:#33f
-    style S3_Medical fill:#ddf,stroke:#33f
+    style S3_Data fill:#ddf,stroke:#33f
     style CW fill:#ffd,stroke:#cc0
     style Public_Zone fill:#eee,stroke:#999
     style VPC_Private fill:#fff,stroke:#000,stroke-dasharray: 5 5
 ```
 
 #### Security Controls Matrix
-*   **In Transit:** All communications use **TLS 1.3**. Internal traffic between microservices is secured via **mTLS** (Istio/Service Mesh).
+*   **In Transit:** All communications use **TLS 1.3**. Network security is enforced via Security Groups and Network ACLs at the VPC level.
 *   **At Rest:** Data in RDS and S3 is encrypted using **AES-256** via **AWS KMS** customer-managed keys (CMK).
-*   **Masking:** CloudWatch Log Subscription Filters automatically detect and mask PHI/PII patterns before logs are stored.
-*   **Audit:** Every access to PHI is captured by the `compliance-audit` module and stored in immutable S3 buckets.
+*   **Masking:** CloudWatch Log Subscription Filters automatically detect and mask sensitive data patterns (PII) before logs are stored.
+*   **Audit:** Every access to sensitive data is captured by the `compliance-audit` module and stored in immutable S3 buckets.
+
+---
+
+### ⚖️ Compliance & Security Controls Mapping
+
+| Control | Implementation | Evidence (Code Path) |
+| :--- | :--- | :--- |
+| **Audit Immutability** | S3 Object Lock (Compliance mode) | `infrastructure/terraform/modules/s3/main.tf` |
+| **Encryption at Rest** | KMS CMK with auto-rotation | `infrastructure/terraform/modules/kms/main.tf` |
+| **Least Privilege Access** | IAM Roles for Service Accounts (IRSA) | `infrastructure/terraform/modules/iam_roles_irsa/` |
+| **Edge Protection** | AWS WAFv2 with Managed Rule Groups | `infrastructure/terraform/modules/waf/main.tf` |
+| **Cost Governance** | AWS Budgets & Alerts | `infrastructure/terraform/global/budgets.tf` |
+
+---
+
+### 🚀 Production Readiness
+- **RTO / RPO:** Target RPO < 15 min (RDS Cross-region snapshots), RTO < 4 hours.
+- **High Availability:** Multi-AZ deployment for RDS and EKS worker nodes (across 3 Availability Zones).
+- **Backups:** AWS Backup policy with 35-day retention and Vault Lock enabled to prevent accidental deletion.
 
 ---
 
@@ -141,19 +170,9 @@ graph LR
 
 ---
 
-### ⚖️ Compliance & Security
-
-*   **HIPAA Ready:** Infrastructure complies with HIPAA requirements. All patient data is encrypted at rest (AES-256) and in transit (TLS 1.3).
-*   **Access Control:** Strict access management via AWS IAM and an internal RBAC system.
-*   **Security Scanning:** Automated IaC (Terraform) scanning using `Checkov` and `TFLint` in CI/CD pipelines.
-*   **Audit Trail:** Full logging of all actions involving sensitive data through a dedicated audit module.
-
----
-
 ### 🛠 Prerequisites
 
 Before you begin, ensure you have the following installed:
-
 *   **Java 21** (**Eclipse Temurin** recommended)
 *   **Node.js 20+** & **pnpm 9+**
 *   **Docker & Docker Compose**
@@ -188,151 +207,72 @@ cd frontend && pnpm dev       # Frontend
 ### 📦 Deployment & Database Migrations
 
 #### 🔑 Secrets Management
-In production environments, sensitive data (DB passwords, API keys) is never stored in environment variables directly. We use **AWS Secrets Manager**. Terraform configures **IAM Roles for Service Accounts (IRSA)** to allow EKS pods to securely retrieve secrets at runtime.
+In production environments, sensitive data is never stored in environment variables directly. We use **AWS Secrets Manager**. Terraform configures **IRSA** to allow EKS pods to securely retrieve secrets at runtime.
 
 #### 🗄 Database Migrations
 We use **Flyway** for version-controlled database schema evolution.
 *   Migrations run automatically on application startup (controlled by Spring profiles).
-*   Migration scripts are located in `app/src/main/resources/db/migration`.
 *   In CI/CD, migrations are validated against a staging environment before being applied to production.
 
 ---
 
 ### 📊 Monitoring & Observability
-
-To maintain 99.9% availability, the platform implements a comprehensive observability stack:
-
-*   **Metrics:** **Prometheus** scrapes JVM, HTTP latency, and DB pool metrics, visualized in **Grafana** dashboards.
-*   **Logging:** Centralized log aggregation in **AWS CloudWatch Logs**. Sensitive PII data is automatically masked using log filters.
-*   **Tracing:** **AWS X-Ray** provides end-to-end request tracing across microservices and ML modules.
+*   **Metrics:** **Prometheus** scrapes JVM and HTTP metrics, visualized in **Grafana** dashboards.
+*   **Logging:** Centralized aggregation in **AWS CloudWatch Logs** with automatic sensitive data masking.
+*   **Tracing:** **AWS X-Ray** provides end-to-end request tracing across services.
 *   **Health Checks:** Real-time status available at `host:port/actuator/health`.
-
----
-
-### ☁️ Infrastructure Deployment
-
-> [!IMPORTANT]
-> Always use CI/CD for Production deployments. Manual `terraform apply` is only recommended for `dev` and `sandbox` environments.
-
-```bash
-# Example for Dev environment
-cd infrastructure/terraform/environments/dev
-terraform init
-terraform plan
-terraform apply
-```
-
----
-
-### 🧪 Testing
-
-We maintain a high standard of quality with automated tests across all layers.
-
-#### 🖥 Backend (Unit & Integration)
-```bash
-./gradlew test
-```
-
-#### 🌐 Frontend (Unit & E2E)
-```bash
-cd frontend && pnpm test
-```
-
-#### 🛡 Infrastructure & Security (Static Analysis)
-```bash
-# Check Terraform security and best practices
-checkov -d infrastructure/terraform
-tflint --recursive
-```
 
 ---
 
 ### 📂 Repository Structure
 
-*   `CHANGELOG.md` — Release history and version management.
-*   `infrastructure/` — Terraform modules, Kubernetes manifests, and technical documentation.
-*   `DR_STRATEGY.md` — Disaster Recovery Strategy.
+```text
+.
+├── .github/workflows/      # CI/CD pipelines (Security scans, Terraform, App)
+├── infrastructure/
+│   ├── terraform/
+│   │   ├── environments/   # Environment-specific values (dev, prod, local)
+│   │   ├── global/         # Shared resources (IAM, Budgets, S3 State)
+│   │   └── modules/        # Reusable IaC components (EKS, RDS, VPC)
+│   └── docs/               # ADRs and Architecture diagrams
+├── app/                    # Backend (Spring Boot 3.5 reference app)
+├── frontend/               # Frontend (Next.js 14 reference app)
+├── CHANGELOG.md            # Release history
+└── DR_STRATEGY.md          # Disaster Recovery Strategy
+```
 
 ---
 
 ### 📖 API Documentation
-
 The platform provides a comprehensive API documented with Swagger/OpenAPI.
 
 *   **Local Access:** [http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html)
-*   **Staging:** `https://api.staging.example.com/swagger-ui.html`
+*   **Staging:** URL provided per environment deployment.
 *   **Definition:** The OpenAPI JSON spec can be found at `/v3/api-docs`.
-
-We use SpringDoc OpenAPI to automatically generate documentation from our controllers.
 
 ---
 
 ### 🔄 CI/CD & Deployment
-
-The project utilizes GitHub Actions to automate the lifecycle:
-1.  **CI:** Runs tests, linters, and security scans on every Pull Request.
+1.  **CI:** Runs tests, linters, and security scans (Checkov, TFLint) on every Pull Request.
 2.  **CD:** Automatically deploys to `staging` after merging into the `main` branch.
 3.  **Production:** Deployment to production is performed manually after Approval via the CI/CD pipeline.
 
 ---
 
-### 📖 Internal Documentation
-
-#### 🏗️ Architecture & Decisions
-*   [Identity & Access Management](./infrastructure/docs/adr/ADR%20004:%20Identity%20and%20Access%20Management.md)
-*   [Compliance & Audit System](./infrastructure/docs/adr/ADR%20006:%20Continuous%20Security%20Audit%20and%20Monitoring.md)
-*   [Disaster Recovery Strategy](./DR_STRATEGY.md)
-
-#### 🌍 Infrastructure & Environments
-*   [Infrastructure Overview](./infrastructure/terraform/README.md)
-*   [Global Resources](./infrastructure/terraform/global/README.md)
-*   [Local Environment](./infrastructure/terraform/environments/local/README.md)
-*   [Production Environment](./infrastructure/terraform/environments/prod/README.md)
-
-#### 📦 Terraform Modules
-*   [ACM (Certificate Manager)](./infrastructure/terraform/modules/acm/README.md)
-*   [ALB (Application Load Balancer)](./infrastructure/terraform/modules/alb/README.md)
-*   [AWS Backup](./infrastructure/terraform/modules/aws_backup/README.md)
-*   [Cognito (Identity Provider)](./infrastructure/terraform/modules/cognito/README.md)
-*   [ECR (Container Registry)](./infrastructure/terraform/modules/ecr/README.md)
-*   [EKS (Kubernetes)](./infrastructure/terraform/modules/eks/README.md)
-*   [IAM Roles for IRSA](./infrastructure/terraform/modules/iam_roles_irsa/README.md)
-*   [KMS (Encryption Keys)](./infrastructure/terraform/modules/kms/README.md)
-*   [Monitoring & Security](./infrastructure/terraform/modules/monitoring/README.md)
-*   [RDS (PostgreSQL)](./infrastructure/terraform/modules/rds/README.md)
-*   [S3 (Storage)](./infrastructure/terraform/modules/s3/README.md)
-*   [VPC (Networking)](./infrastructure/terraform/modules/vpc/README.md)
-*   [VPC Endpoints](./infrastructure/terraform/modules/vpc_endpoints/README.md)
-*   [WAF (Web Application Firewall)](./infrastructure/terraform/modules/waf/README.md)
-
----
-
 ### 🚀 Future Scalability & Roadmap
-
-As the platform evolves, several strategic initiatives are planned to enhance security, cost-efficiency, and operational excellence:
-
-*   **Multi-Account Strategy:** Migration to **AWS Organizations** to isolate environments (`dev`, `prod`, `security`, `shared-services`) into separate AWS accounts. This will further reduce the blast radius and simplify compliance auditing.
-*   **FinOps & Cost Optimization:** 
-    - Integration of **AWS Compute Optimizer** to right-size EKS nodes and RDS instances.
-    - Implementation of **Spot Instances** for non-critical Kubernetes workloads (e.g., batch processing, dev environments) to reduce compute costs by up to 70-90%.
-*   **Service Mesh (Istio / AWS App Mesh):** Adoption of a Service Mesh to provide:
-    - **mTLS (Mutual TLS):** Automatic encryption and identity verification for all pod-to-pod communications.
-    - **Advanced Traffic Management:** Canary deployments, circuit breaking, and fine-grained rate limiting.
-    - **Observability:** Deep insights into service-level metrics and distributed tracing.
+*   **Multi-Account Strategy:** Migration to **AWS Organizations** to isolate environments.
+*   **FinOps & Cost Optimization:** Implementation of **Spot Instances** and **AWS Compute Optimizer**.
+*   **Service Mesh (Istio):** Adoption planned for advanced traffic management and pod-to-pod **mTLS**.
 
 ---
 
 ### 🆘 Troubleshooting & Support
-
-1. **Port Conflicts:** Ensure port `5432` (PostgreSQL) and `6379` (Redis) are free before running Docker Compose.
-2. **Logs Access:**
-   - **Local:** Use `docker-compose logs -f [service_name]` for real-time logs.
-   - **AWS:** Access logs in **CloudWatch Log Groups** under `/aws/eks/example-cluster/`.
-3. **AWS Permissions:** If Terraform or CLI fails, ensure you have an active session (e.g., `aws sso login`) and the correct IAM permissions.
-4. **Clean Start:** If local environment is corrupted, run `docker-compose down -v` to wipe volumes and start fresh.
-5. **Questions:** Contact dev-support@example.com or open a GitHub Issue.
+1. **Port Conflicts:** Ensure port `5432` and `6379` are free.
+2. **Logs Access:** Use `docker-compose logs` locally or **CloudWatch Log Groups** in AWS.
+3. **AWS Permissions:** Ensure you have an active session (e.g., `aws sso login`).
+4. **Questions:** Please open a **GitHub Issue** for technical queries and support.
 
 ---
 
 ### ⚖️ License
-This project is **Proprietary**. All rights reserved by GenovaX Platform. See [LICENSE](LICENSE) for details.
+This project is **Proprietary**. All rights reserved by GenovaX Platform.
