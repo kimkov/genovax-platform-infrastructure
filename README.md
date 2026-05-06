@@ -12,7 +12,8 @@ application source code is out of scope.
 **GenovaX** is a highly scalable, modern platform designed for medical technology, bioinformatics, and other **regulated environments** with **strict compliance requirements**.
 
 > [!IMPORTANT]
-> This repository focuses on **Infrastructure-as-Code (IaC)** and **platform governance**. Application source code is decoupled and managed in separate repositories. The platform provides reference Docker configurations for Spring Boot and ML services to demonstrate deployment readiness.
+> This repository focuses on **Infrastructure-as-Code (IaC)** and **platform governance**. Application source code is decoupled and managed in separate repositories. 
+> The platform provides reference Docker configurations for Spring Boot and ML services to demonstrate deployment readiness.
 
 ---
 
@@ -42,7 +43,7 @@ application source code is out of scope.
 The platform is designed with High Availability and strict data security requirements in mind.
 
 > [!NOTE]
-> This repository contains the core platform infrastructure (IaC) and a reference implementation of a high-security application to demonstrate end-to-end integration in regulated environments.
+> This repository focuses on platform infrastructure; application components are included only as deployment references.
 
 ```mermaid
 graph TD
@@ -142,15 +143,15 @@ graph LR
 
 ### ⚖️ Compliance & Security Controls Mapping
 
-| Control | Implementation | Evidence (Code Path) |
-| :--- | :--- | :--- |
-| **Audit Immutability** | S3 Object Lock (Compliance mode) | [`infrastructure/terraform/global/audit.tf`](./infrastructure/terraform/global/audit.tf) |
-| **Encryption at Rest** | KMS CMK with auto-rotation | [`infrastructure/terraform/modules/kms/`](./infrastructure/terraform/modules/kms/) |
-| **Least Privilege Access** | IAM Roles for Service Accounts (IRSA) | [`infrastructure/terraform/modules/iam_roles_irsa/`](./infrastructure/terraform/modules/iam_roles_irsa/) |
-| **Network Isolation** | Private Subnets & Network Policies | [`infrastructure/k8s/manifests/network-policies.yaml`](./infrastructure/k8s/manifests/network-policies.yaml) |
-| **State Security** | Encrypted S3 Backend with Locking | [`infrastructure/terraform/global/s3-backend.tf`](./infrastructure/terraform/global/s3-backend.tf) |
-| **Cost Governance** | AWS Budgets & Alerts | [`infrastructure/terraform/global/budgets.tf`](./infrastructure/terraform/global/budgets.tf) |
-| **Disaster Recovery** | Cross-Region Replication & Backups | [`DR_STRATEGY.md`](./DR_STRATEGY.md) |
+| Control                    | Implementation                        | Evidence (Code Path)                                                                                         |
+|:---------------------------|:--------------------------------------|:-------------------------------------------------------------------------------------------------------------|
+| **Audit Immutability**     | S3 Object Lock (Compliance mode)      | [`infrastructure/terraform/global/audit.tf`](./infrastructure/terraform/global/audit.tf)                     |
+| **Encryption at Rest**     | KMS CMK with auto-rotation            | [`infrastructure/terraform/modules/kms/`](./infrastructure/terraform/modules/kms/)                           |
+| **Least Privilege Access** | IAM Roles for Service Accounts (IRSA) | [`infrastructure/terraform/modules/iam_roles_irsa/`](./infrastructure/terraform/modules/iam_roles_irsa/)     |
+| **Network Isolation**      | Private Subnets & Network Policies    | [`infrastructure/k8s/manifests/network-policies.yaml`](./infrastructure/k8s/manifests/network-policies.yaml) |
+| **State Security**         | Encrypted S3 Backend with Locking     | [`infrastructure/terraform/global/s3-backend.tf`](./infrastructure/terraform/global/s3-backend.tf)           |
+| **Cost Governance**        | AWS Budgets & Alerts                  | [`infrastructure/terraform/global/budgets.tf`](./infrastructure/terraform/global/budgets.tf)                 |
+| **Disaster Recovery**      | Cross-Region Replication & Backups    | [`DR_STRATEGY.md`](./DR_STRATEGY.md)                                                                         |
 
 ---
 
@@ -163,13 +164,13 @@ graph LR
 
 ### 💻 Tech Stack
 
-| Layer              | Technologies                                                        |
-|:-------------------|:--------------------------------------------------------------------|
-| **Infrastructure** | Terraform 1.5+, AWS (EKS, RDS, S3, KMS)                             |
-| **Containerization**| Docker, Helm 3                                                     |
-| **Security/Scan**   | Checkov, TFLint, OPA (Rego)                                        |
-| **Database**       | PostgreSQL 15, Redis                                                |
-| **Monitoring**     | Prometheus, Grafana, AWS CloudWatch                                 |
+| Layer                | Technologies                                                   |
+|:---------------------|:---------------------------------------------------------------|
+| **Infrastructure**   | Terraform 1.5+, AWS (EKS, RDS, S3, KMS)                        |
+| **Containerization** | Docker, Helm 3                                                 |
+| **Security/Scan**    | Checkov, TFLint, OPA (Rego)                                    |
+| **Database**         | PostgreSQL 15, Redis                                           |
+| **Monitoring**       | Prometheus, Grafana, AWS CloudWatch                            |
 
 ---
 
@@ -245,7 +246,7 @@ We use **Flyway** for version-controlled database schema evolution.
 
 ### 🔄 CI/CD & Deployment
 1.  **CI:** Runs tests, linters, and security scans (Checkov, TFLint) on every Pull Request.
-2.  **CD:** Automatically deploys to `staging` after merging into the `main` branch.
+2.  **CD:** Automatically deploys to non-production environments after merging into the `main` branch. Staging is implemented as a dedicated non-production environment using environment-specific Terraform variables.
 3.  **Production:** Deployment to production is performed manually after Approval via the CI/CD pipeline.
 
 ---
