@@ -1,59 +1,3 @@
-# ---- IAM Groups ----
-
-resource "aws_iam_group" "architects" {
-  name = var.iam_group_names["architects"]
-}
-
-resource "aws_iam_group" "developers" {
-  name = var.iam_group_names["developers"]
-}
-
-resource "aws_iam_group" "testers" {
-  name = var.iam_group_names["testers"]
-}
-
-resource "aws_iam_group" "dbas" {
-  name = var.iam_group_names["dbas"]
-}
-
-# ---- Group Policy Attachments ----
-
-# Architects: Controlled by variable for easy JIT migration
-resource "aws_iam_group_policy_attachment" "architects_attach" {
-  for_each   = toset(var.architect_policy_arns)
-  group      = aws_iam_group.architects.name
-  policy_arn = each.value
-}
-
-# Developers & Testers
-resource "aws_iam_group_policy_attachment" "developers_read_only" {
-  group      = aws_iam_group.developers.name
-  policy_arn = "arn:aws:iam::aws:policy/ReadOnlyAccess"
-}
-
-resource "aws_iam_group_policy_attachment" "testers_read_only" {
-  group      = aws_iam_group.testers.name
-  policy_arn = "arn:aws:iam::aws:policy/ReadOnlyAccess"
-}
-
-# Database Administrators: RDS + Backup
-resource "aws_iam_group_policy_attachment" "dba_rds" {
-  group      = aws_iam_group.dbas.name
-  policy_arn = "arn:aws:iam::aws:policy/AmazonRDSFullAccess"
-}
-
-# Mandatory MFA for all groups
-resource "aws_iam_group_policy_attachment" "mfa_enforcement" {
-  for_each = toset([
-    aws_iam_group.architects.name,
-    aws_iam_group.developers.name,
-    aws_iam_group.testers.name,
-    aws_iam_group.dbas.name
-  ])
-  group = each.value
-  policy_arn = aws_iam_policy.enforce_mfa.arn
-}
-
 # ---- Permissions Boundary (Critical for Production Security) ----
 resource "aws_iam_policy" "standard_boundary" {
   name        = "${var.project_name}StandardBoundary"
@@ -178,80 +122,7 @@ resource "aws_iam_role_policy_attachment" "github_actions_attach" {
   policy_arn = aws_iam_policy.infrastructure_deployment.arn
 }
 
-# Security & MFA Policies
-resource "aws_iam_account_password_policy" "strict" {
-  minimum_password_length        = 14
-  require_lowercase_characters   = true
-  require_uppercase_characters   = true
-  require_numbers                = true
-  require_symbols                = true
-  allow_users_to_change_password = true
-  password_reuse_prevention      = 24
-  max_password_age               = 90
-}
-
-resource "aws_iam_policy" "enforce_mfa" {
-  name        = "EnforceMFAPolicy"
-  description = "Blocks all access if MFA is not present, except for MFA management."
-
-  policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Sid    = "AllowManageOwnMFA"
-        Effect = "Allow"
-        Action = ["iam:*VirtualMFADevice", "iam:EnableMFADevice", "iam:ResyncMFADevice", "iam:List*MFADevices"]
-        Resource = [
-          "arn:aws:iam::${data.aws_caller_identity.current.account_id}:mfa/$${aws:username}",
-          "arn:aws:iam::${data.aws_caller_identity.current.account_id}:user/$${aws:username}"
-        ]
-      },
-      {
-        Sid    = "DenyAllExceptIfMFA"
-        Effect = "Deny"
-        NotAction = ["iam:*VirtualMFADevice", "iam:EnableMFADevice", "iam:List*MFADevices", "iam:GetAccountPasswordPolicy"]
-        Resource = "*"
-        Condition = { "BoolIfExists" = { "aws:MultiFactorAuthPresent" : "false" } }
-      }
-    ]
-  })
-}
-
 data "aws_caller_identity" "current" {}
-
-# ---- SAML Provider & Federated Access (Office 365 / Azure AD) ----
-resource "aws_iam_saml_provider" "office365" {
-  count                  = var.office365_saml_metadata_document != "" ? 1 : 0
-  name                   = "Office365"
-  saml_metadata_document = var.office365_saml_metadata_document
-}
-
-resource "aws_iam_role" "federated_admin" {
-  count = var.office365_saml_metadata_document != "" ? 1 : 0
-  name  = "FederatedAdminRole"
-
-  assume_role_policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [{
-      Action = "sts:AssumeRoleWithSAML"
-      Effect = "Allow"
-      Principal = { Federated = aws_iam_saml_provider.office365[0].arn }
-      Condition = {
-        StringEquals = {
-          "SAML:aud" = "https://signin.aws.amazon.com/saml"
-        }
-      }
-    }]
-  })
-  
-  tags = var.common_tags
-}
-
-resource "aws_iam_role_policy_attachment" "federated_admin_attach" {
-  count      = var.office365_saml_metadata_document != "" ? 1 : 0
-  role       = aws_iam_role.federated_admin[0].name
-  policy_arn = "arn:aws:policy/AdministratorAccess"
-}
 
 # Access to EKS for developers
 resource "aws_iam_policy" "dev_eks_access" {
@@ -286,11 +157,6 @@ resource "aws_iam_policy" "dev_eks_access" {
   })
 }
 
-resource "aws_iam_group_policy_attachment" "dev_eks_attach" {
-  group      = aws_iam_group.developers.name
-  policy_arn = aws_iam_policy.dev_eks_access.arn
-}
-
 # Security Auditor Role: a role for conducting security audits
 resource "aws_iam_role" "security_auditor" {
   name = "SecurityAuditorRole"
@@ -310,4 +176,84 @@ resource "aws_iam_role" "security_auditor" {
 resource "aws_iam_role_policy_attachment" "auditor_read_only" {
   role       = aws_iam_role.security_auditor.name
   policy_arn = "arn:aws:iam::aws:policy/ReadOnlyAccess"
+}
+
+# ---------------------------------------------------------------------------------------------------------------------
+# AWS IAM Identity Center (SSO) - Modern alternative to IAM Users
+# ---------------------------------------------------------------------------------------------------------------------
+
+data "aws_ssoadmin_instances" "current" {}
+
+locals {
+  sso_instance_arn      = tolist(data.aws_ssoadmin_instances.current.arns)[0]
+  sso_instance_id       = tolist(data.aws_ssoadmin_instances.current.identity_store_ids)[0]
+  
+  # Mapping of permission sets to their managed policies
+  permission_sets = {
+    Administrator = ["arn:aws:policy/AdministratorAccess"]
+    PowerUser     = ["arn:aws:policy/PowerUserAccess"]
+    ReadOnly      = ["arn:aws:policy/ReadOnlyAccess"]
+    DBAdmin       = ["arn:aws:policy/AmazonRDSFullAccess"]
+    Billing       = ["arn:aws:policy/JobFunction/Billing"]
+    SecurityAdmin = [
+      "arn:aws:policy/IAMFullAccess",
+      "arn:aws:policy/AmazonGuardDutyFullAccess",
+      "arn:aws:policy/AWSKeyManagementServicePowerUser",
+      "arn:aws:policy/AWSWAFConsoleFullAccess"
+    ]
+    Support       = ["arn:aws:policy/AWSSupportAccess"]
+    Developer     = ["arn:aws:policy/PowerUserAccess"]
+    Architect     = ["arn:aws:policy/PowerUserAccess"]
+  }
+}
+
+resource "aws_ssoadmin_permission_set" "sets" {
+  for_each         = local.permission_sets
+  name             = each.key
+  description      = "Permission set for ${each.key} role"
+  instance_arn     = local.sso_instance_arn
+  relay_state      = "https://console.aws.amazon.com/"
+  session_duration = "PT8H"
+  tags             = var.common_tags
+}
+
+resource "aws_ssoadmin_managed_policy_attachment" "attachments" {
+  for_each = {
+    for pair in flatten([
+      for set_name, policies in local.permission_sets : [
+        for policy in policies : {
+          set_name = set_name
+          policy   = policy
+        }
+      ]
+    ]) : "${pair.set_name}-${pair.policy}" => pair
+  }
+
+  instance_arn       = local.sso_instance_arn
+  managed_policy_arn = each.value.policy
+  permission_set_arn = aws_ssoadmin_permission_set.sets[each.value.set_name].arn
+}
+
+# Apply standard boundary to all SSO Permission Sets for consistency
+resource "aws_ssoadmin_permissions_boundary_attachment" "standard" {
+  for_each           = aws_ssoadmin_permission_set.sets
+  instance_arn       = local.sso_instance_arn
+  permission_set_arn = each.value.arn
+  
+  permissions_boundary {
+    customer_managed_policy_reference {
+      name = aws_iam_policy.standard_boundary.name
+      path = "/"
+    }
+  }
+}
+
+# Attach custom EKS access policy to the Developer permission set
+resource "aws_ssoadmin_customer_managed_policy_attachment" "developer_eks" {
+  instance_arn       = local.sso_instance_arn
+  permission_set_arn = aws_ssoadmin_permission_set.sets["Developer"].arn
+  customer_managed_policy_reference {
+    name = aws_iam_policy.dev_eks_access.name
+    path = "/"
+  }
 }

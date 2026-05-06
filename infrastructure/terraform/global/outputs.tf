@@ -28,22 +28,12 @@ output "kms_state_key_arn" {
   value       = aws_kms_key.terraform_state.arn
 }
 
-output "iam_group_architects_arn" {
-  description = "ARN of the Architects IAM group"
-  value = aws_iam_group.architects.arn
+output "access_analyzer_arn" {
+  description = "ARN of the IAM Access Analyzer"
+  value       = aws_accessanalyzer_analyzer.main.arn
 }
 
-output "iam_group_developers_arn" {
-  description = "ARN of the Developers IAM group"
-  value = aws_iam_group.developers.arn
-}
-
-output "office365_saml_provider_arn" {
-  description = "ARN of the Office 365 SAML Identity Provider"
-  value       = length(aws_iam_saml_provider.office365) > 0 ? aws_iam_saml_provider.office365[0].arn : null
-}
-
-output "federated_admin_role_arn" {
-  description = "ARN of the Federated Admin Role (Azure AD)"
-  value       = length(aws_iam_role.federated_admin) > 0 ? aws_iam_role.federated_admin[0].arn : null
+output "sso_permission_sets" {
+  description = "Map of SSO Permission Set ARNs"
+  value       = { for k, v in aws_ssoadmin_permission_set.sets : k => v.arn }
 }

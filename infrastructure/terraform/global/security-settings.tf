@@ -57,3 +57,10 @@ resource "aws_config_configuration_recorder_status" "main" {
   is_enabled = true
   depends_on = [aws_config_delivery_channel.main]
 }
+
+# AWS IAM Access Analyzer to identify resources shared externally
+resource "aws_accessanalyzer_analyzer" "main" {
+  analyzer_name = "${var.project_name}-account-analyzer"
+  type          = "ACCOUNT"
+  tags          = var.common_tags
+}

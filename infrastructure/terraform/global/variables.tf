@@ -54,16 +54,7 @@ variable "common_tags" {
   }
 }
 
-variable "iam_group_names" {
-  description = "Names for IAM groups"
-  type        = map(string)
-  default     = {
-    architects = "CloudArchitects"
-    developers = "Developers"
-    testers    = "QA-Testers"
-    dbas       = "DatabaseAdmins"
-  }
-}
+
 
 variable "allowed_pass_role_patterns" {
   description = "List of role patterns that CI/CD is allowed to pass to services"
@@ -75,14 +66,3 @@ variable "allowed_pass_role_patterns" {
   ]
 }
 
-variable "architect_policy_arns" {
-  description = "List of policy ARNs for the Architects group"
-  type        = list(string)
-  default     = ["arn:aws:policy/PowerUserAccess"]
-}
-
-variable "office365_saml_metadata_document" {
-  description = "SAML metadata document for Office 365 / Azure AD federation"
-  type        = string
-  default     = ""
-}
