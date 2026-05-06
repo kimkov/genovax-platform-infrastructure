@@ -33,7 +33,7 @@ variable "common_tags" {
   default = {
     Project            = "GenovaX"
     DataClassification = "PHI"
-    Compliance         = "HIPAA"
+    Compliance         = "High-Compliance"
     ManagedBy          = "Terraform"
   }
 }

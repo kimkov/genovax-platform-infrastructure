@@ -105,8 +105,8 @@ resource "aws_backup_plan" "main" {
 
 # Audit
 resource "aws_backup_report_plan" "compliance_report" {
-  name        = "${var.env}-hipaa-compliance-report"
-  description = "HIPAA Backup Compliance Report"
+  name        = "${var.env}-high-compliance-report"
+  description = "High-Compliance Backup Report"
 
   report_delivery_channel {
     s3_bucket_name = aws_s3_bucket.reports.id

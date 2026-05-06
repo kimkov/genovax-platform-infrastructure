@@ -1,6 +1,6 @@
 ### AWS S3 Storage Module
 
-This module provides a production-ready, HIPAA-compliant implementation of **Amazon S3** storage for the GenovaX platform.
+This module provides a production-ready implementation of **Amazon S3** storage for the GenovaX platform, designed for regulated environments.
 It is specifically designed to handle sensitive medical data (ePHI) and backup files with a focus on security, durability, and regional redundancy.
 
 ### Features

@@ -1,7 +1,7 @@
 # Security Policy
 
 ## Overview
-GenovaX takes the security and privacy of patient data (PII/PHI) extremely seriously. As a MedTech platform, we are committed to maintaining the highest security standards, including **HIPAA compliance**. This policy outlines our process for reporting and handling security vulnerabilities.
+GenovaX takes the security and privacy of patient data (PII/PHI) extremely seriously. As a MedTech platform, we are committed to maintaining the highest security standards for regulated environments. This policy outlines our process for reporting and handling security vulnerabilities.
 
 ## Supported Versions
 We provide security updates for the following versions:
@@ -30,7 +30,7 @@ We follow the principles of **Coordinated Vulnerability Disclosure (CVD)**.
 *   **Acknowledgment:** We will acknowledge receipt of your report within **24 hours**.
 *   **Triage & Severity:** Within **72 hours**, we will provide a preliminary assessment using the **CVSS v3.1** scale.
 *   **Remediation Timelines:**
-    *   **Critical (HIPAA impact):** Fix within **7 days**.
+    *   **Critical (high compliance impact):** Fix within **7 days**.
     *   **High:** Fix within **14 days**.
     *   **Medium/Low:** Fix in the next scheduled release.
 *   **Transparency:** Security advisories will be published via [GitHub Security Advisories](https://github.com/GenovaX/genovax-platform-infrastructure/security/advisories).
@@ -55,7 +55,7 @@ We will not pursue legal action against researchers who:
 *   Provide us with a reasonable amount of time to fix the issue before public disclosure.
 
 ## Security Practices
-To maintain HIPAA compliance, we employ:
+To maintain high compliance standards, we employ:
 *   **Automated Scanning:** Every Pull Request is scanned with `Checkov` and `TFLint` for IaC security.
 *   **Encryption:** AES-256 for data at rest and TLS 1.3 for data in transit.
 *   **Audit Logging:** All access to PII is recorded in a tamper-proof audit trail.

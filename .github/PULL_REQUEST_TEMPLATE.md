@@ -20,7 +20,7 @@
 - [ ] New and existing unit tests pass locally with my changes.
 - [ ] I have updated the documentation accordingly (README, internal docs, or KDoc/JSDoc).
 
-### ⚖️ Security & Compliance (HIPAA)
+### ⚖️ Security & Compliance (High-Compliance)
 - [ ] **Data Privacy**: I have verified that no PII (Personally Identifiable Information) is exposed in logs or error messages.
 - [ ] **Encryption**: Changes involving data persistence ensure encryption at rest and in transit (AES-256, TLS 1.3).
 - [ ] **Access Control**: Changes to IAM roles or Security Groups follow the principle of least privilege.

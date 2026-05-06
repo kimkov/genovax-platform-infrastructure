@@ -1,6 +1,6 @@
 ### AWS VPC Infrastructure Module
 
-This module provides a secure, multi-AZ networking foundation for the GenovaX platform. It is designed to meet HIPAA compliance requirements
+This module provides a secure, multi-AZ networking foundation for the GenovaX platform. It is designed to meet strict compliance requirements.
 by ensuring strict network isolation, comprehensive traffic auditing, and high availability.
 
 ### Features

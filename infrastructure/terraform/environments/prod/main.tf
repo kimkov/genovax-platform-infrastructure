@@ -73,7 +73,7 @@ module "rds" {
   multi_az              = true
   publicly_accessible   = false
 
-  # Monitoring (HIPAA Requirement)
+  # Monitoring (High-Compliance Requirement)
   monitoring_role_arn   = aws_iam_role.rds_monitoring.arn
 
   allowed_security_groups = [module.eks.node_security_group_id]
@@ -147,7 +147,7 @@ module "ecr" {
   allowed_read_principals = [module.eks.node_iam_role_arn]
 }
 
-# Kubernetes Resources for HIPAA & Operations
+# Kubernetes Resources for High-Compliance & Operations
 resource "kubernetes_namespace" "phi_apps" {
   metadata {
     name = "phi-apps"

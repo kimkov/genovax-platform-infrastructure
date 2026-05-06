@@ -9,7 +9,7 @@ This module provides a secure, production-ready implementation of **Amazon Elast
     *   **Secrets Encryption**: All Kubernetes secrets are encrypted at rest using a customer-managed AWS KMS key.
     *   **EBS Encryption**: Managed Node Groups are configured with encrypted EBS volumes using the specified KMS key.
     *   **IRSA (IAM Roles for Service Accounts)**: Full support for IRSA to provide fine-grained IAM permissions to Kubernetes pods.
-    *   **HIPAA Ready**: Support for Fargate Profiles allows for strict isolation of workloads handling sensitive data (e.g., PHI).
+    *   **High Compliance**: Support for Fargate Profiles allows for strict isolation of workloads handling sensitive data (e.g., PHI).
 *   **Networking**:
     *   **VPC CNI**: Uses Amazon VPC CNI for high-performance pod networking.
     *   **Network Policies**: Enabled by default to control traffic flow between pods.

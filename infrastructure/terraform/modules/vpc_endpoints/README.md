@@ -3,7 +3,7 @@
 This module provides a secure and compliant way to connect your VPC to AWS services using Interface and Gateway Endpoints. 
 By using VPC Endpoints, traffic between your VPC and AWS services does not leave the Amazon network, enhancing security and reducing data transfer costs.
 
-This implementation is "HIPAA Hardened," featuring strict security group rules and endpoint policies to prevent unauthorized access and data exfiltration.
+This implementation is designed for regulated environments, featuring strict security group rules and endpoint policies to prevent unauthorized access and data exfiltration.
 
 ### Features
 

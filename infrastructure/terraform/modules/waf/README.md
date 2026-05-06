@@ -1,7 +1,7 @@
 ### AWS WAFv2 Module
 
 This module provides a robust and secure AWS WAFv2 Web ACL configuration designed to protect regional resources like Application Load Balancers (ALB). 
-It includes a set of managed rules to defend against common web exploits, rate limiting for DDoS protection, and a highly secure, HIPAA-compliant S3 logging infrastructure.
+It includes a set of managed rules to defend against common web exploits, rate limiting for DDoS protection, and a highly secure, high-compliance S3 logging infrastructure.
 
 ### Features
 
@@ -15,7 +15,7 @@ It includes a set of managed rules to defend against common web exploits, rate l
 *   **Compliant Logging Architecture**:
     *   **Secure S3 Storage**: Dedicated bucket for WAF logs with strict security controls.
     *   **Encryption**: Logs are encrypted at rest using SSE-KMS with a customer-managed key.
-    *   **HIPAA Compliance (Object Lock)**: Configured with S3 Object Lock in `COMPLIANCE` mode with a **365-day retention period**, ensuring audit logs are immutable and cannot be deleted.
+    *   **High Compliance (Object Lock)**: Configured with S3 Object Lock in `COMPLIANCE` mode with a **365-day retention period**, ensuring audit logs are immutable and cannot be deleted.
     *   **Data Durability**: Bucket versioning is enabled to track changes and prevent accidental data loss.
     *   **Public Access Prevention**: Comprehensive public access block settings to ensure log privacy.
 *   **Observability**:
@@ -33,7 +33,7 @@ module "waf" {
 
   common_tags = {
     Project     = "GenovaX"
-    Compliance  = "HIPAA"
+    Compliance  = "High-Compliance"
     Environment = "Production"
   }
 }
@@ -81,7 +81,7 @@ module "waf" {
 
 ### Implementation Details
 
-1.  **Immutability**: The WAF logs are protected by a 365-day `COMPLIANCE` mode Object Lock. This is a critical control for HIPAA compliance, ensuring that security logs are preserved for the required audit duration and cannot be tampered with by any user, including the root account.
+1.  **Immutability**: The WAF logs are protected by a 365-day `COMPLIANCE` mode Object Lock. This is a critical control for strict compliance, ensuring that security logs are preserved for the required audit duration and cannot be tampered with by any user, including the root account.
 2.  **S3 Bucket Policy**: The module automatically attaches a bucket policy that grants the AWS Log Delivery service (`delivery.logs.amazonaws.com`) permission to write logs to the bucket.
 3.  **Scope**: The Web ACL is defined with a `REGIONAL` scope. To use it with CloudFront, the module would need to be modified to use the `CLOUDFRONT` scope and be deployed in the `us-east-1` region.
 4.  **Rule Ordering**:

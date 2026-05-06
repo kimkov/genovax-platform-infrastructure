@@ -11,7 +11,7 @@ Files: `s3-backend.tf`
 
 ### 2. Security and IAM
 Files: `iam.tf`, `security-settings.tf`
-- **Password Policy:** Strict requirements for password complexity and rotation (HIPAA compliance).
+ - **Password Policy:** Strict requirements for password complexity and rotation (strict compliance).
 - **MFA Enforcement:** A policy that blocks resource access unless Multi-Factor Authentication (MFA) is enabled.
 - **GitHub Actions OIDC:** Secure access configuration for CI/CD via OpenID Connect, eliminating the need for persistent access keys.
 - **Audit Roles:** `SecurityAuditorRole` for resource inspection and compliance checks.

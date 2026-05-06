@@ -22,13 +22,13 @@ assignees: ""
   What is the technical justification? What problem does it solve?
 -->
 
-## 🛡 Security & Compliance (HIPAA)
+## 🛡 Security & Compliance (High-Compliance)
 <!-- 
   How does this change impact our security and compliance posture?
   - Does it introduce new IAM permissions? (The Least privilege principle)
   - Does it affect encryption at rest or in transit?
   - Does it change network isolation (Security Groups/NACLs)?
-  - Is the audit trail preserved for HIPAA compliance?
+  - Is the audit trail preserved for high compliance?
 -->
 
 ## 💰 Cost Analysis (Infracost)

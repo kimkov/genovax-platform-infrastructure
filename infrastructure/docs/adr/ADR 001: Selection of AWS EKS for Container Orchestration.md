@@ -12,5 +12,5 @@ Use Amazon EKS (version 1.31).
 
 Consequences:
     (+) Full control over the Kubernetes API.
-    (+) HIPAA compliance through resource isolation in Fargate.
+    (+) High compliance through resource isolation in Fargate.
     (-) Increased operational complexity compared to ECS.

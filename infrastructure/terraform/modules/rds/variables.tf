@@ -38,7 +38,7 @@ variable "db_password" {
   sensitive = true
 }
 
-# Security and Encryption (HIPAA Compliance)
+# Security and Encryption (High Compliance)
 
 variable "kms_key_arn" {
   description = "The ARN of the KMS key used for at-rest storage encryption"
@@ -46,7 +46,7 @@ variable "kms_key_arn" {
 }
 
 variable "storage_encrypted" {
-  description = "Whether to enable storage encryption (required for HIPAA)"
+  description = "Whether to enable storage encryption (required for high compliance)"
   type = bool
   default = true
 }
@@ -109,7 +109,7 @@ variable "multi_az" {
 }
 
 variable "backup_retention_period" {
-  description = "The number of days to retain backups (HIPAA recommended: 35)"
+  description = "The number of days to retain backups (high-compliance recommended: 35)"
   type = number
   default = 35
 }

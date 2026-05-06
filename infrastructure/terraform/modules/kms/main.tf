@@ -107,7 +107,7 @@ data "aws_iam_policy_document" "eks_kms_policy" {
 
 # KEY FOR S3 (Medical Data / ePHI)
 resource "aws_kms_key" "s3" {
-  description             = "KMS key for S3 medical data (HIPAA)"
+  description             = "KMS key for S3 medical data (High-Compliance)"
   enable_key_rotation     = true
   multi_region            = true
   deletion_window_in_days = 30
@@ -170,7 +170,7 @@ data "aws_iam_policy_document" "s3_kms_policy" {
 
 # KEY FOR MONITORING (CloudTrail, Config)
 resource "aws_kms_key" "monitoring" {
-  description             = "KMS key for CloudTrail and Config logs (HIPAA)"
+  description             = "KMS key for CloudTrail and Config logs (High-Compliance)"
   enable_key_rotation     = true
   deletion_window_in_days = 30
   policy                  = data.aws_iam_policy_document.monitoring_kms_policy.json

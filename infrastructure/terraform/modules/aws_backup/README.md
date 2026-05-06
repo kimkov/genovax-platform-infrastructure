@@ -1,7 +1,7 @@
 ### AWS Backup Terraform Module
 
 This module provides a comprehensive, production-ready implementation of **AWS Backup**, 
-designed to meet high-security standards and compliance requirements (such as HIPAA). It includes automated backup plans, 
+designed to meet high-security standards and strict compliance requirements. It includes automated backup plans,
 immutability features (Vault Lock), monitoring, and disaster recovery capabilities.
 
 ### Features
@@ -11,7 +11,7 @@ immutability features (Vault Lock), monitoring, and disaster recovery capabiliti
 *   **Security & Compliance**:
     *   **Anti-Deletion Policy**: A vault-level access policy that denies `backup:DeleteRecoveryPoint` except for specified administrator roles.
     *   **Encryption**: Mandatory encryption for the Backup Vault and SNS notification topics using KMS.
-    *   **Compliance Reporting**: Automated HIPAA-compliant backup reports delivered to an encrypted S3 bucket.
+    *   **Compliance Reporting**: Automated high-compliance backup reports delivered to an encrypted S3 bucket.
 *   **Disaster Recovery (DR)**: Optional cross-region copy of backups to a secondary vault.
 *   **Automated Restore Testing**: Built-in validation of recovery points to ensure data integrity and meeting RTO/RPO objectives.
 *   **Monitoring & Logging**:

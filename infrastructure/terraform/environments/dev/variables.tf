@@ -24,6 +24,6 @@ variable "common_tags" {
     Project     = "GenovaX"
     Environment = "dev"
     ManagedBy   = "Terraform"
-    Compliance  = "HIPAA-Ready"
+    Compliance  = "High-Compliance"
   }
 }

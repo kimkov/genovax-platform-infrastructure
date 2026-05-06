@@ -21,7 +21,7 @@
 /.github/workflows/                     @platform/cloud-architects @platform/security-leads
 
 # ==========================================
-# 🛡 Security & Compliance (HIPAA Critical)
+# 🛡 Security & Compliance (High-Compliance Critical)
 # ==========================================
 # IAM, Audit, and Security modules
 /modules/identity-access/               @platform/security-leads

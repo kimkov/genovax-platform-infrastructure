@@ -18,7 +18,7 @@ assignees: ""
 ## 🛠 Proposed Solution
 <!-- A clear and concise description of how you envision this feature working. -->
 
-## 🛡 Security & Compliance (HIPAA)
+## 🛡 Security & Compliance (High-Compliance)
 <!-- 
   How does this feature impact data privacy? 
   Will it handle PII (Personally Identifiable Information) or PHI (Protected Health Information)?
@@ -38,7 +38,7 @@ assignees: ""
 
 ## ✅ Compliance & Privacy Check
 - [ ] I confirm that this proposal **does not** contain any PII (Personally Identifiable Information) or PHI (Protected Health Information).
-- [ ] I have considered the HIPAA implications and mentioned them in the security section above.
+- [ ] I have considered the high-compliance implications and mentioned them in the security section above.
 
 ## 📝 Additional Context
 <!-- Add any other context or screenshots about the feature request here. -->

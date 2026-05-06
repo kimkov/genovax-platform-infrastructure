@@ -1,6 +1,6 @@
 ### AWS RDS (PostgreSQL) Module
 
-This module provides a production-ready, HIPAA-compliant implementation of **Amazon RDS for PostgreSQL**. 
+This module provides a production-ready, high-compliance implementation of **Amazon RDS for PostgreSQL**.
 It is designed to host the GenovaX platform's relational data with a strong focus on security, high availability, and performance.
 
 ### Features
@@ -8,7 +8,7 @@ It is designed to host the GenovaX platform's relational data with a strong focu
 *   **Security & Compliance**:
     *   **Encryption at Rest**: All data is encrypted at rest using a customer-managed AWS KMS key.
     *   **Encryption in Transit**: SSL is enforced via a custom parameter group (`rds.force_ssl = 1`).
-    *   **HIPAA Ready**: Configured with 35-day backup retention and mandatory encryption to meet compliance requirements.
+    *   **High Compliance**: Configured with 35-day backup retention and mandatory encryption to meet compliance requirements.
     *   **Private Access**: The database is deployed in private subnets and is not publicly accessible.
     *   **IAM Authentication**: Supports IAM database authentication for centralized identity management.
 *   **High Availability & Scalability**:
@@ -80,7 +80,7 @@ module "rds" {
 | **`allocated_storage`**            | Initial storage allocation in gigabytes                 | `number`       | `500`            | no         |
 | **`max_allocated_storage`**        | Upper limit for storage autoscaling                     | `number`       | `5000`           | no         |
 | **`multi_az`**                     | Enable Multi-AZ for failover support                    | `bool`         | `true`           | no         |
-| **`backup_retention_period`**      | Days to retain backups (HIPAA recommended: 35)          | `number`       | `35`             | no         |
+| **`backup_retention_period`**      | Days to retain backups (high-compliance recommended: 35)          | `number`       | `35`             | no         |
 | **`performance_insights_enabled`** | Enable Performance Insights                             | `bool`         | `true`           | no         |
 | **`monitoring_interval`**          | Interval for Enhanced Monitoring metrics (seconds)      | `number`       | `60`             | no         |
 
@@ -96,7 +96,7 @@ module "rds" {
 ### Implementation Details
 
 1.  **High Availability**: The module deploys a primary instance in a Multi-AZ configuration and creates two read-only replicas across different availability zones to ensure data redundancy and read scalability.
-2.  **Compliance**: By default, it forces SSL connections and retains backups for 35 days, aligning with HIPAA requirements for data integrity and recovery.
+2.  **Compliance**: By default, it forces SSL connections and retains backups for 35 days, aligning with strict compliance requirements for data integrity and recovery.
 3.  **Network Security**: The database is restricted to private subnets. Ingress is strictly limited to traffic from the `allowed_security_groups` on port 5432 (PostgreSQL).
 4.  **Monitoring**: CloudWatch log exports are enabled for `postgresql` and `upgrade` logs, providing an audit trail and easier troubleshooting.
 5.  **Data Protection**: Deletion protection is enabled by default, and `skip_final_snapshot` is set to `false` for production environments to prevent data loss during teardown.

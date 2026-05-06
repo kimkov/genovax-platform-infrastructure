@@ -1,6 +1,6 @@
 name: "GenovaX CI/CD Pipeline"
 
-# Standardizing the development lifecycle for HIPAA-compliant MedTech platform.
+# Standardizing the development lifecycle for high-compliance MedTech platform.
 # Includes Backend (Java/Gradle), Frontend (Next.js/pnpm/Turbo), and deployment hooks.
 
 on:

@@ -61,7 +61,7 @@ resource "aws_vpc_endpoint" "interface_endpoints" {
 # Security Group for VPC Endpoints
 resource "aws_security_group" "vpc_endpoints" {
   name        = "${var.env}-vpc-endpoints-sg"
-  description = "Strict security group for VPC Endpoints (HIPAA Hardened)"
+  description = "Strict security group for VPC Endpoints (high-compliance hardened)"
   vpc_id      = var.vpc_id
 
   ingress {

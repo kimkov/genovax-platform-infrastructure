@@ -1,7 +1,7 @@
 # Disaster Recovery (DR) Strategy: GenovaX Medical Data Platform
 
 ## 1. Introduction
-This document outlines the Disaster Recovery (DR) strategy for the GenovaX platform. Given our handling of Protected Health Information (ePHI) and HIPAA compliance requirements, our primary focus is on data integrity and minimizing downtime during regional AWS outages.
+This document outlines the Disaster Recovery (DR) strategy for the GenovaX platform. Given our handling of Protected Health Information (ePHI) and strict compliance requirements in regulated environments, our primary focus is on data integrity and minimizing downtime during regional AWS outages.
 
 ## 2. Key Metrics (RPO and RTO)
 
@@ -21,7 +21,7 @@ To ensure system resilience during a full regional failure, GenovaX uses a **Pil
 ### 3.1. Data Storage (Amazon S3)
 *   **Mechanism:** Cross-Region Replication (CRR).
 *   **Implementation:** All data in the `example-medical-data` bucket is asynchronously replicated to a secondary region.
-*   **Security:** Replicas are protected using KMS (Cross-Region Keys) and S3 Object Lock (Compliance Mode) to prevent ransomware attacks, satisfying HIPAA data preservation requirements.
+*   **Security:** Replicas are protected using KMS (Cross-Region Keys) and S3 Object Lock (Compliance Mode) to prevent ransomware attacks, satisfying high-compliance data preservation requirements.
 
 ### 3.2. Databases (Amazon RDS / PostgreSQL)
 *   **Mechanism:** AWS Backup + Cross-Region Copy.
@@ -41,7 +41,7 @@ To ensure system resilience during a full regional failure, GenovaX uses a **Pil
 5.  **DNS Failover:** Update Route53 records to point traffic to the new Application Load Balancer (ALB).
 6.  **Verification:** Conduct integrity checks on ePHI data and API availability.
 
-## 5. Compliance and HIPAA Standards
+## 5. Compliance in Regulated Environments
 *   **Encryption:** All backups are encrypted using AES-256 (KMS) both at rest and in transit (TLS 1.2+).
 *   **Auditability:** AWS Backup Audit Manager daily generates compliance reports for auditors.
 *   **Testing:** Disaster Recovery Drills are conducted every 6 months to ensure readiness.

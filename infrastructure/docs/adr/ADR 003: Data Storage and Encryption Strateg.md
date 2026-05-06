@@ -8,5 +8,5 @@ Decision:
     SSL Enforcement: Mandatory TLS for all database connections (`rds.force_ssl = 1`).
 
 Consequences:
-    (+) HIPAA compliance for data encryption.
+    (+) High compliance for data encryption.
     (+) High availability during AZ-level failures.

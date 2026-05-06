@@ -1,7 +1,7 @@
 ### AWS Monitoring & Security Module
 
 This module implements a comprehensive security monitoring and auditing framework for AWS environments. 
-It is designed to meet high-security standards (such as **HIPAA** and **SOC2**) by centralizing logs, enabling threat detection, 
+It is designed to meet high-security standards (such as **SOC2** and other regulated requirements) by centralizing logs, enabling threat detection,
 and providing real-time alerts for critical security events.
 
 ### Features

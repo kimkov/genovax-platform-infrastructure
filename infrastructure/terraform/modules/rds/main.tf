@@ -42,13 +42,13 @@ resource "aws_db_instance" "primary" {
   publicly_accessible = var.publicly_accessible
   iam_database_authentication_enabled = var.iam_database_authentication_enabled
 
-  # HIPAA & Security
+  # High Compliance & Security
   storage_encrypted = var.storage_encrypted
   kms_key_id = var.kms_key_arn
   deletion_protection = var.deletion_protection
   copy_tags_to_snapshot = var.copy_tags_to_snapshot
 
-  # Monitoring & Performance Insights (HIPAA Requirement)
+  # Monitoring & Performance Insights (High-Compliance Requirement)
   performance_insights_enabled = var.performance_insights_enabled
   performance_insights_kms_key_id = var.kms_key_arn
   performance_insights_retention_period = var.performance_insights_retention_period

@@ -1,6 +1,6 @@
 # Production Environment (Prod Environment)
 
-This layer describes the target infrastructure for the GenovaX application in the production environment. The configuration focuses on high availability (Multi-AZ), security (HIPAA compliance), and scalability.
+This layer describes the target infrastructure for the GenovaX application in the production environment. The configuration focuses on high availability (Multi-AZ), security (high compliance), and scalability.
 
 ## Core Components
 

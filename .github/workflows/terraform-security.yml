@@ -21,7 +21,7 @@ jobs:
           tflint --init
           tflint -f compact --recursive
 
-      - name: Run Checkov (HIPAA Scan)
+      - name: Run Checkov (High-Compliance Scan)
         uses: bridgecrewio/checkov-action@master
         with:
           directory: infrastructure/terraform

@@ -35,7 +35,7 @@ resource "aws_s3_bucket_object_lock_configuration" "waf_logs" {
   rule {
     default_retention {
       mode = "COMPLIANCE"
-      days = 365 # HIPAA Audit Log Retention Requirement
+      days = 365 # High-Compliance Audit Log Retention Requirement
     }
   }
 }
@@ -61,7 +61,7 @@ resource "aws_s3_bucket_policy" "waf_logs_policy" {
 # Web ACL Configuration
 resource "aws_wafv2_web_acl" "main" {
   name        = "${var.env}-waf-acl"
-  description = "Production WAF for ALB (HIPAA compliant)"
+  description = "Production WAF for ALB (high-compliance)"
   scope       = "REGIONAL"
 
   default_action {

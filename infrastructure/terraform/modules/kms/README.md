@@ -1,7 +1,7 @@
 ### AWS KMS Module
 
 This module provides a secure and centralized implementation of **AWS Key Management Service (KMS)** Customer Managed Keys (CMKs). 
-It is designed to manage encryption at rest across various AWS services in a **HIPAA-compliant** manner, featuring automated key rotation, 
+It is designed to manage encryption at rest across various AWS services in a high-compliance manner, featuring automated key rotation,
 multi-region support for critical resources, and fine-grained resource-based policies.
 
 ### Features
@@ -40,7 +40,7 @@ module "kms" {
   common_tags = {
     Environment = "prod"
     Project     = "GenovaX"
-    Compliance  = "HIPAA"
+    Compliance  = "High-Compliance"
   }
 }
 ```

@@ -9,7 +9,7 @@ metadata:
     alb.ingress.kubernetes.io/scheme: internet-facing
     alb.ingress.kubernetes.io/target-type: ip
 
-    # Security (HIPAA: TLS 1.2+)
+    # Security (High-Compliance: TLS 1.2+)
     alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS":443}]'
     alb.ingress.kubernetes.io/ssl-policy: ELBSecurityPolicy-TLS13-1-2-2021-06
     alb.ingress.kubernetes.io/certificate-arn: "{{ .Values.alb.certificateArn }}" # Замените на ваш ARN
@@ -17,7 +17,7 @@ metadata:
     # Automatic redirect to HTTPS
     alb.ingress.kubernetes.io/actions.ssl-redirect: '{"Type": "redirect", "RedirectConfig": { "Protocol": "HTTPS", "Port": "443", "StatusCode": "HTTP_301"}}'
 
-    # Logging (HIPAA: Audit traffic),
+    # Logging (High-Compliance: Audit traffic),
     # We use a bucket that has already been created in the S3/VPC module.
     alb.ingress.kubernetes.io/load-balancer-attributes: "access_logs.s3.enabled=true,access_logs.s3.bucket={{ .Values.alb.logBucketName }},access_logs.s3.prefix=alb-logs"
 

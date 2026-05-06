@@ -14,7 +14,7 @@ following the principle of least privilege by mapping AWS IAM roles to specific 
     *   **Cluster Autoscaler**: Manages Auto Scaling Groups (ASGs) based on cluster demand, scoped to the specific EKS cluster.
     *   **External DNS**: Automates Route53 record updates for Kubernetes services and ingresses.
     *   **Cert-Manager**: Facilitates DNS-01 challenges for automated TLS certificate issuance via Route53.
-*   **Application Specific Roles**: Includes a dedicated role for **PHI Processor**, tailored for HIPAA-compliant workloads with restricted access to medical data in S3 and encryption keys in KMS.
+*   **Application Specific Roles**: Includes a dedicated role for **PHI Processor**, tailored for high-compliance workloads with restricted access to sensitive data in S3 and encryption keys in KMS.
 
 ### Usage Example
 

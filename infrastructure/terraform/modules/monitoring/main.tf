@@ -16,7 +16,7 @@ resource "aws_cloudwatch_log_group" "cloudtrail_logs" {
   tags              = var.common_tags
 }
 
-# S3 Bucket for logs (Hardened & HIPAA Ready)
+# S3 Bucket for logs (Hardened & High-Compliance Ready)
 resource "aws_s3_bucket" "cloudtrail_logs" {
   bucket        = "${var.env}-platform-cloudtrail-logs"
   force_destroy = false
