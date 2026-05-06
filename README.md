@@ -5,10 +5,11 @@
 [![IaC Security Scan](https://github.com/GenovaX/genovax-platform-infrastructure/actions/workflows/terraform-security.yml/badge.svg)](https://github.com/GenovaX/genovax-platform-infrastructure/actions/workflows/terraform-security.yml)
 [![Checkov](https://img.shields.io/badge/security-Checkov-brightgreen)](https://www.checkov.io/)
 [![TFLint](https://img.shields.io/badge/security-TFLint-blue)](https://github.com/terraform-linters/tflint)
-[![Java Version](https://img.shields.io/badge/Java-21-orange.svg)](https://adoptium.net/temurin/releases/?version=21)
-[![Node Version](https://img.shields.io/badge/Node-20+-green.svg)](https://nodejs.org/)
 
-**GenovaX** is a highly scalable, modern platform designed for medical technology, bioinformatics, and other **regulated environments** with **strict compliance requirements**. The system integrates data management, compliance auditing, and research tools into a single secure ecosystem.
+**GenovaX** is a highly scalable, modern platform designed for medical technology, bioinformatics, and other **regulated environments** with **strict compliance requirements**.
+
+> [!IMPORTANT]
+> This repository focuses on **Infrastructure-as-Code (IaC)** and **platform governance**. Application source code is decoupled and managed in separate repositories. The platform provides reference Docker configurations for Spring Boot and ML services to demonstrate deployment readiness.
 
 ---
 
@@ -26,7 +27,6 @@
 - [☁️ Infrastructure Deployment](#-infrastructure-deployment)
 - [🧪 Testing](#-testing)
 - [📂 Repository Structure](#-repository-structure)
-- [📖 API Documentation](#-api-documentation)
 - [🔄 CI/CD & Deployment](#-cicd--deployment)
 - [📖 Internal Documentation](#-internal-documentation)
 - [🆘 Troubleshooting & Support](#-troubleshooting--support)
@@ -57,12 +57,11 @@ graph TD
     Core --> CW[AWS CloudWatch - Logs/Metrics]
 ```
 
-*   **Backend:** Microservices architecture based on Spring Boot 3.5.
-*   **Frontend:** Monorepo using Next.js/React for various roles (Admin, Clinician, Patient).
 *   **Infrastructure:** Fully automated deployment via Terraform on AWS (EKS, RDS, S3).
-*   **Data:** Isolated PostgreSQL schemas to separate PII (Personally Identifiable Information) and system data.
+*   **Data Security:** Isolated environments, encryption at rest/transit, and automated audit trails.
+*   **Reference Assets:** Dockerfiles and Helm charts for standard MedTech service stacks.
 
-[**🔗 View Detailed Architecture Diagram**](./infrastructure/docs/architecture/Architecture.png)
+[**🔗 View Detailed Architecture Diagram**](./infrastructure/docs/architecture/Architecture.png) | [**🛡 View Threat Model**](./infrastructure/docs/security/threat-model.md)
 
 ---
 
@@ -142,11 +141,13 @@ graph LR
 
 | Control | Implementation | Evidence (Code Path) |
 | :--- | :--- | :--- |
-| **Audit Immutability** | S3 Object Lock (Compliance mode) | `infrastructure/terraform/modules/s3/main.tf` |
-| **Encryption at Rest** | KMS CMK with auto-rotation | `infrastructure/terraform/modules/kms/main.tf` |
-| **Least Privilege Access** | IAM Roles for Service Accounts (IRSA) | `infrastructure/terraform/modules/iam_roles_irsa/` |
-| **Edge Protection** | AWS WAFv2 with Managed Rule Groups | `infrastructure/terraform/modules/waf/main.tf` |
-| **Cost Governance** | AWS Budgets & Alerts | `infrastructure/terraform/global/budgets.tf` |
+| **Audit Immutability** | S3 Object Lock (Compliance mode) | [`infrastructure/terraform/global/audit.tf`](./infrastructure/terraform/global/audit.tf) |
+| **Encryption at Rest** | KMS CMK with auto-rotation | [`infrastructure/terraform/modules/kms/`](./infrastructure/terraform/modules/kms/) |
+| **Least Privilege Access** | IAM Roles for Service Accounts (IRSA) | [`infrastructure/terraform/modules/iam_roles_irsa/`](./infrastructure/terraform/modules/iam_roles_irsa/) |
+| **Network Isolation** | Private Subnets & Network Policies | [`infrastructure/k8s/manifests/network-policies.yaml`](./infrastructure/k8s/manifests/network-policies.yaml) |
+| **State Security** | Encrypted S3 Backend with Locking | [`infrastructure/terraform/global/s3-backend.tf`](./infrastructure/terraform/global/s3-backend.tf) |
+| **Cost Governance** | AWS Budgets & Alerts | [`infrastructure/terraform/global/budgets.tf`](./infrastructure/terraform/global/budgets.tf) |
+| **Disaster Recovery** | Cross-Region Replication & Backups | [`DR_STRATEGY.md`](./DR_STRATEGY.md) |
 
 ---
 
@@ -161,45 +162,39 @@ graph LR
 
 | Layer              | Technologies                                                        |
 |:-------------------|:--------------------------------------------------------------------|
-| **Backend**        | Java 21 (Eclipse Temurin), Spring Boot 3.5, Spring Security, Flyway |
-| **Frontend**       | Next.js 14, React, TypeScript, pnpm 9+, Tailwind CSS                |
-| **Database**       | PostgreSQL 15, Redis (Caching)                                      |
-| **Infrastructure** | Terraform 1.5+, AWS (EKS, RDS, S3, KMS), Docker                     |
-| **ML Engine**      | Python 3.11, FastAPI, PyTorch                                       |
-| **Monitoring**     | Prometheus, Grafana, AWS CloudWatch, AWS X-Ray                      |
+| **Infrastructure** | Terraform 1.5+, AWS (EKS, RDS, S3, KMS)                             |
+| **Containerization**| Docker, Helm 3                                                     |
+| **Security/Scan**   | Checkov, TFLint, OPA (Rego)                                        |
+| **Database**       | PostgreSQL 15, Redis                                                |
+| **Monitoring**     | Prometheus, Grafana, AWS CloudWatch                                 |
 
 ---
 
 ### 🛠 Prerequisites
 
 Before you begin, ensure you have the following installed:
-*   **Java 21** (**Eclipse Temurin** recommended)
-*   **Node.js 20+** & **pnpm 9+**
-*   **Docker & Docker Compose**
 *   **Terraform 1.5+**
 *   **AWS CLI** (configured with appropriate credentials)
+*   **Docker & Docker Compose**
+*   **Make** (for using the provided Makefile)
 
 ---
 
 ### 🚀 Quick Start & Environment
 
-#### 🔐 Environment Variables
-Before running the services, create a local `.env` file based on the provided template:
+#### 🛠 Management Interface (Makefile)
+The project includes a `Makefile` to standardize common operations:
 ```bash
-cp .env.example .env
-# Edit .env and provide your encryption keys and DB credentials
+make help        # Show available commands
+make setup       # Initialize local environment
+make plan ENV=dev # Run Terraform plan
+make scan        # Run security scans (Checkov/TFLint)
 ```
 
 #### 🐳 Local Infrastructure (Docker)
-Start the database and local AWS emulation (LocalStack):
+Start local AWS emulation (LocalStack) and databases for testing:
 ```bash
 docker-compose up -d
-```
-
-#### 🏃 Launching Services
-```bash
-./gradlew :app:bootRun        # Backend
-cd frontend && pnpm dev       # Frontend
 ```
 
 ---
@@ -228,27 +223,20 @@ We use **Flyway** for version-controlled database schema evolution.
 
 ```text
 .
-├── .github/workflows/      # CI/CD pipelines (Security scans, Terraform, App)
+├── .github/workflows/      # CI/CD pipelines (Security scans, Terraform)
 ├── infrastructure/
 │   ├── terraform/
 │   │   ├── environments/   # Environment-specific values (dev, prod, local)
 │   │   ├── global/         # Shared resources (IAM, Budgets, S3 State)
 │   │   └── modules/        # Reusable IaC components (EKS, RDS, VPC)
-│   └── docs/               # ADRs and Architecture diagrams
-├── app/                    # Backend (Spring Boot 3.5 reference app)
-├── frontend/               # Frontend (Next.js 14 reference app)
+│   ├── docker/             # Reference Dockerfiles for App & ML services
+│   ├── k8s/                # Kubernetes manifests and Helm charts
+│   ├── scripts/            # Utility and automation scripts
+│   └── docs/               # ADRs, Architecture, and Security docs
+├── Makefile                # Unified entrypoint for platform management
 ├── CHANGELOG.md            # Release history
 └── DR_STRATEGY.md          # Disaster Recovery Strategy
 ```
-
----
-
-### 📖 API Documentation
-The platform provides a comprehensive API documented with Swagger/OpenAPI.
-
-*   **Local Access:** [http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html)
-*   **Staging:** URL provided per environment deployment.
-*   **Definition:** The OpenAPI JSON spec can be found at `/v3/api-docs`.
 
 ---
 
