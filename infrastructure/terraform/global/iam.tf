@@ -1,3 +1,152 @@
+resource "aws_iam_group" "architects" {
+  name = "CloudArchitects"
+}
+
+resource "aws_iam_group" "developers" {
+  name = "Developers"
+}
+
+resource "aws_iam_group" "testers" {
+  name = "QA-Testers"
+}
+
+resource "aws_iam_group" "dbas" {
+  name = "DatabaseAdmins"
+}
+
+# ---- Linking policies to groups ----
+
+# Architects: Full access except billing
+resource "aws_iam_group_policy_attachment" "architects_full_access" {
+  group      = aws_iam_group.architects.name
+  policy_arn = "arn:aws:iam::aws:policy/PowerUserAccess"
+}
+
+resource "aws_iam_group_policy_attachment" "arch_iam" {
+  group      = aws_iam_group.architects.name
+  policy_arn = "arn:aws:iam::aws:policy/IAMFullAccess"
+}
+
+# Developers: ReadOnly + custom access to EKS and logs
+resource "aws_iam_group_policy_attachment" "developers_read_only" {
+  group = aws_iam_group.developers.name
+  policy_arn = "arn:aws:iam::aws:policy/ReadOnlyAccess"
+}
+
+# Testers: Read-Only + CloudWatch
+resource "aws_iam_group_policy_attachment" "testers_read_only" {
+  group = aws_iam_group.testers.name
+  policy_arn = "arn:aws:iam::aws:policy/ReadOnlyAccess"
+}
+
+# Database Administrators: RDS + Backup
+resource "aws_iam_group_policy_attachment" "dba_rds" {
+  group      = aws_iam_group.dbas.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonRDSFullAccess"
+}
+
+resource "aws_iam_group_policy_attachment" "dba_backup" {
+  group      = aws_iam_group.dbas.name
+  policy_arn = "arn:aws:iam::aws:policy/AWSBackupFullAccess"
+}
+
+# ---- Custom policies ----
+
+# Access to EKS for developers
+resource "aws_iam_policy" "dev_eks_access" {
+  name = "DeveloperEKSAccess"
+  description = "Allows developers to interact with EKS clusters and logs"
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "eks:DescribeCluster",
+          "eks:ListClusters",
+          "eks:AccessKubernetesApi",
+          "eks:ListNodegroups"
+        ]
+        Resource = "*"
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "logs:GetLogEvents",
+          "logs:FilterLogEvents",
+          "logs:DescribeLogStreams",
+          "logs:DescribeLogGroups"
+        ]
+        Resource = "arn:aws:logs:*:*:log-group:/aws/eks/*"
+      }
+    ]
+  })
+}
+
+resource "aws_iam_group_policy_attachment" "dev_eks_attach" {
+  group      = aws_iam_group.developers.name
+  policy_arn = aws_iam_policy.dev_eks_access.arn
+}
+
+# Mandatory MFA for all groups
+resource "aws_iam_group_policy_attachment" "arch_mfa" {
+  group      = aws_iam_group.architects.name
+  policy_arn = aws_iam_policy.enforce_mfa.arn
+}
+
+resource "aws_iam_group_policy_attachment" "dev_mfa" {
+  group      = aws_iam_group.developers.name
+  policy_arn = aws_iam_policy.enforce_mfa.arn
+}
+
+resource "aws_iam_group_policy_attachment" "qa_mfa" {
+  group      = aws_iam_group.testers.name
+  policy_arn = aws_iam_policy.enforce_mfa.arn
+}
+
+resource "aws_iam_group_policy_attachment" "dba_mfa" {
+  group      = aws_iam_group.dbas.name
+  policy_arn = aws_iam_policy.enforce_mfa.arn
+}
+
+# Permission Boundary
+resource "aws_iam_policy" "standard_boundary" {
+  name        = "GenovaXStandardBoundary"
+  description = "Limits maximum permissions that can be granted to delegated roles"
+  policy      = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Sid = "AllowEverythingExceptCritical"
+        Effect = "Allow"
+        Action = "*"
+        Resource = "*"
+      },
+      {
+        Sid = "DenyAccessToAuditLogs"
+        Effect = "Deny"
+        Action = [
+          "s3:DeleteBucket",
+          "s3:DeleteObject",
+          "cloudtrail:DeleteTrail",
+          "cloudtrail:StopLogging"
+        ]
+        Resource = "*"
+      },
+      {
+        Sid = "DenyBillingAndOrgs"
+        Effect = "Deny"
+        Action = [
+          "aws-portal:*",
+          "billing:*",
+          "organizations:*"
+        ]
+        Resource = "*"
+      }
+    ]
+  })
+}
+
 # Strict password policy (HIPAA Compliance)
 resource "aws_iam_account_password_policy" "strict" {
   minimum_password_length = 14
