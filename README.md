@@ -1,3 +1,6 @@
+This repository contains platform infrastructure, security guardrails, and deployment assets used to operate a cloud-native application; 
+application source code is out of scope.
+
 # GenovaX Platform
 
 [![Build Status](https://github.com/GenovaX/genovax-platform-infrastructure/actions/workflows/main.yml/badge.svg)](https://github.com/GenovaX/genovax-platform-infrastructure/actions/workflows/main.yml)
