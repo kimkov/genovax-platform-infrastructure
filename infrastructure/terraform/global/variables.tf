@@ -16,6 +16,21 @@ variable "domain_name" {
   default = "example.com"
 }
 
+variable "github_repository" {
+  description = "GitHub repository for OIDC federation (format: organization/repo)"
+  type        = string
+  default     = "GenovaX/infrastructure"
+}
+
+variable "oidc_thumbprint_list" {
+  description = "List of thumbprints for the OIDC provider (GitHub)"
+  type        = list(string)
+  default     = [
+    "6938fd4d3472f6a175a407de5f70230bb209ee2e", # Primary
+    "1c58a3a8518e8759bf075b76b750d4f2df264fcd"  # Secondary (DigiCert)
+  ]
+}
+
 variable "billing_notification_email" {
   description = "Email for budget overage notifications"
   type = string
@@ -37,4 +52,37 @@ variable "common_tags" {
     Type = "Global"
     Owner = "Cloud-Architecture-Team"
   }
+}
+
+variable "iam_group_names" {
+  description = "Names for IAM groups"
+  type        = map(string)
+  default     = {
+    architects = "CloudArchitects"
+    developers = "Developers"
+    testers    = "QA-Testers"
+    dbas       = "DatabaseAdmins"
+  }
+}
+
+variable "allowed_pass_role_patterns" {
+  description = "List of role patterns that CI/CD is allowed to pass to services"
+  type        = list(string)
+  default     = [
+    "arn:aws:iam::*:role/eks-node-role-*",
+    "arn:aws:iam::*:role/lambda-execution-role-*",
+    "arn:aws:iam::*:role/app-execution-role-*"
+  ]
+}
+
+variable "architect_policy_arns" {
+  description = "List of policy ARNs for the Architects group"
+  type        = list(string)
+  default     = ["arn:aws:policy/PowerUserAccess"]
+}
+
+variable "office365_saml_metadata_document" {
+  description = "SAML metadata document for Office 365 / Azure AD federation"
+  type        = string
+  default     = ""
 }
