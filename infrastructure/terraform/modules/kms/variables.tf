@@ -4,18 +4,21 @@ variable "env" {
 }
 
 variable "common_tags" {
-  type    = map(string)
-  default = {}
+  description = "A map of tags to add to all resources"
+  type        = map(string)
+  default     = {}
 }
 
 variable "s3_replication_role_arn" {
-  type    = string
-  default = null
+  description = "The ARN of the IAM role used for S3 cross-region replication"
+  type        = string
+  default     = null
 }
 
 variable "eks_node_role_arn" {
-  type    = string
-  default = null
+  description = "The ARN of the IAM role for EKS worker nodes"
+  type        = string
+  default     = null
 }
 
 variable "ecr_allowed_read_principals" {

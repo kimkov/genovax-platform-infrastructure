@@ -9,7 +9,7 @@ variable "notification_email" {
 }
 
 variable "common_tags" {
-  description = "Common tags"
+  description = "A map of tags to add to all resources"
   type = map(string)
   default = {}
 }
@@ -20,11 +20,11 @@ variable "kms_key_arn" {
 }
 
 variable "alb_arn_suffix" {
-  description = ""
+  description = "The ARN suffix of the ALB for use with CloudWatch Metrics"
   type = string
 }
 
 variable "eks_cluster_name" {
-  description = ""
+  description = "The name of the EKS cluster for monitoring and logs"
   type = string
 }

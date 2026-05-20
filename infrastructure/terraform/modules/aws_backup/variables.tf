@@ -4,6 +4,7 @@ variable "env" {
 }
 
 variable "common_tags" {
+  description = "A map of tags to add to all resources"
   type = map(string)
   default = {}
 }
@@ -14,21 +15,24 @@ variable "kms_key_arn" {
 }
 
 variable "backup_retention_days" {
-  description = "T"
+  description = "The number of days to keep backups (7 years by default for HIPAA compliance)"
   type = number
   default = 2555
 }
 
 variable "cold_storage_after_days" {
+  description = "Specifies the number of days after creation that a recovery point is moved to cold storage"
   type = number
   default = 30
 }
 
 variable "notification_email" {
+  description = "Email address for AWS Backup notifications"
   type = string
 }
 
 variable "backup_selection_tags" {
+  description = "Tags used to select resources for backup"
   type = list(object({
     type = string,
     key = string,
@@ -42,6 +46,7 @@ variable "backup_selection_tags" {
 
 # Disaster Recovery
 variable "dr_copy_enabled" {
+  description = "Enables or disables cross-region copy for Disaster Recovery"
   type = bool
   default = true
 }
@@ -54,16 +59,19 @@ variable "dr_destination_vault_arn" {
 
 # Vault Lock configurations
 variable "vault_lock_min_retention_days" {
+  description = "The minimum retention period that the vault retains its recovery points"
   type = number
   default = 7
 }
 
 variable "vault_lock_max_retention_days" {
+  description = "The maximum retention period that the vault retains its recovery points"
   type = number
   default = 2555
 }
 
 variable "vault_lock_changeable_for_days" {
+  description = "The number of days before the vault lock becomes immutable"
   type = number
   default = 3
 }
