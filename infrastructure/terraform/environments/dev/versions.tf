@@ -27,6 +27,9 @@ provider "aws" {
 provider "aws" {
   alias = "secondary"
   region = "us-west-2"
+  default_tags {
+    tags = var.common_tags
+  }
 }
 
 provider "kubernetes" {

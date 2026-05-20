@@ -124,17 +124,17 @@ resource "aws_iam_role_policy_attachment" "github_actions_attach" {
 
 data "aws_caller_identity" "current" {}
 
-# Access to EKS for developers
-resource "aws_iam_policy" "dev_eks_access" {
-  name        = "DeveloperEKSAccess"
-  description = "Allows developers to interact with EKS clusters and logs"
+# Project-wide Scoped Access Policy (ABAC)
+resource "aws_iam_policy" "project_scoped_access" {
+  name        = "GenovaXProjectScopedAccess"
+  description = "Provides scoped-down access to project resources based on tags and specific service needs"
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
       {
-        Sid    = "AllowEKSRead"
-        Effect = "Allow"
-        Action = [
+        Sid      = "AllowEKSBasicAccess"
+        Effect   = "Allow"
+        Action   = [
           "eks:DescribeCluster",
           "eks:ListClusters",
           "eks:AccessKubernetesApi",
@@ -143,18 +143,36 @@ resource "aws_iam_policy" "dev_eks_access" {
         Resource = "*"
       },
       {
-        Sid    = "AllowEKSLogsRead"
-        Effect = "Allow"
-        Action = [
+        Sid      = "AllowProjectResourceManagement"
+        Effect   = "Allow"
+        Action   = [
+          "ec2:*", "rds:*", "s3:*", "kms:*", "eks:*",
+          "elasticloadbalancing:*", "autoscaling:*",
+          "cloudwatch:*", "logs:*", "sns:*", "sqs:*"
+        ]
+        Resource = "*"
+        Condition = {
+          StringEquals = { "aws:ResourceTag/Project" = var.project_name }
+        }
+      },
+      {
+        Sid      = "AllowLogsAccess"
+        Effect   = "Allow"
+        Action   = [
           "logs:GetLogEvents",
           "logs:FilterLogEvents",
           "logs:DescribeLogStreams",
           "logs:DescribeLogGroups"
         ]
-        Resource = "arn:aws:logs:*:*:log-group:/aws/eks/*"
+        Resource = [
+          "arn:aws:logs:*:*:log-group:/aws/eks/*",
+          "arn:aws:logs:*:*:log-group:/aws/rds/*",
+          "arn:aws:logs:*:*:log-group:${var.project_name}*"
+        ]
       }
     ]
   })
+  tags = var.common_tags
 }
 
 # Security Auditor Role: a role for conducting security audits
@@ -178,9 +196,7 @@ resource "aws_iam_role_policy_attachment" "auditor_read_only" {
   policy_arn = "arn:aws:iam::aws:policy/ReadOnlyAccess"
 }
 
-# ---------------------------------------------------------------------------------------------------------------------
-# AWS IAM Identity Center (SSO) - Modern alternative to IAM Users
-# ---------------------------------------------------------------------------------------------------------------------
+# AWS IAM Identity Center (SSO)
 
 data "aws_ssoadmin_instances" "current" {}
 
@@ -202,10 +218,11 @@ locals {
       "arn:aws:policy/AWSWAFConsoleFullAccess"
     ]
     Support       = ["arn:aws:policy/AWSSupportAccess"]
-    # Note: PowerUserAccess is used for broad access, but in a real-world scenario 
-    # it should be scoped down using ResourceTag/Project conditions.
-    Developer     = ["arn:aws:policy/PowerUserAccess"]
-    Architect     = ["arn:aws:policy/PowerUserAccess"]
+    # Scoped access for regular roles using ABAC and ReadOnly base
+    Developer     = ["arn:aws:policy/ReadOnlyAccess"]
+    Architect     = ["arn:aws:policy/ReadOnlyAccess"]
+    # Break-glass role for emergency access only (Highly Audited)
+    BreakGlass    = ["arn:aws:policy/PowerUserAccess"]
   }
 }
 
@@ -250,12 +267,14 @@ resource "aws_ssoadmin_permissions_boundary_attachment" "standard" {
   }
 }
 
-# Attach custom EKS access policy to the Developer permission set
-resource "aws_ssoadmin_customer_managed_policy_attachment" "developer_eks" {
+# Attach custom project-scoped access policy to Developer and Architect permission sets
+resource "aws_ssoadmin_customer_managed_policy_attachment" "scoped_access" {
+  for_each = toset(["Developer", "Architect"])
+
   instance_arn       = local.sso_instance_arn
-  permission_set_arn = aws_ssoadmin_permission_set.sets["Developer"].arn
+  permission_set_arn = aws_ssoadmin_permission_set.sets[each.key].arn
   customer_managed_policy_reference {
-    name = aws_iam_policy.dev_eks_access.name
+    name = aws_iam_policy.project_scoped_access.name
     path = "/"
   }
 }

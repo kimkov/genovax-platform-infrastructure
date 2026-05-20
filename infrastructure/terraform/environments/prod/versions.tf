@@ -35,7 +35,15 @@ provider "aws" {
 
 provider "aws" {
   alias  = "secondary"
-  region = "region"
+  region = "us-east-1" # Usually DR region
+
+  default_tags {
+    tags = {
+      Environment = var.env
+      Project     = "GenovaX"
+      Stack       = "Dual-stack"
+    }
+  }
 }
 
 provider "kubernetes" {
